@@ -1,4 +1,4 @@
-package linc.com.colorsapp
+package linc.com.colorsapp.ui.colors
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import linc.com.colorsapp.domain.ColorModel
+import linc.com.colorsapp.R
+import linc.com.colorsapp.utils.updateAll
 
 
 class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>() {
@@ -24,7 +26,11 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColorViewHolder {
-        return ColorViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.color_list_item, parent, false))
+        return ColorViewHolder(
+            LayoutInflater.from(
+                parent.context
+            ).inflate(R.layout.color_list_item, parent, false)
+        )
     }
 
     override fun getItemCount(): Int {

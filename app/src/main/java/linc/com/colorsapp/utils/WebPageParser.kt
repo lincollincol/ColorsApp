@@ -1,6 +1,7 @@
-package linc.com.colorsapp
+package linc.com.colorsapp.utils
 
 import android.util.Log
+import linc.com.colorsapp.domain.ColorModel
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 

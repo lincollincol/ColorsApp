@@ -1,4 +1,4 @@
-package linc.com.colorsapp
+package linc.com.colorsapp.ui.custom
 
 import android.content.Context
 import android.util.AttributeSet
@@ -45,7 +45,7 @@ class OverScrollBehavior(context: Context, attributeSet: AttributeSet)
             return
         }
 
-        overScrollY -= (dyUnconsumed/OVER_SCROLL_AREA)
+        overScrollY -= (dyUnconsumed/ OVER_SCROLL_AREA)
         val group = target as ViewGroup
         val count = group.childCount
         for (i in 0 until count) {

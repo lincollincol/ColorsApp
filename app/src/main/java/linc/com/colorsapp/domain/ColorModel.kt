@@ -1,4 +1,4 @@
-package linc.com.colorsapp
+package linc.com.colorsapp.domain
 
 data class ColorModel (var name: String? = null,
                        var hex: String? = null,
