@@ -12,11 +12,9 @@ class WebPageParser {
 
         val extractColorsPattern: Pattern = Pattern.compile("<li><code.+?(?=</li>)")
         val extractFromTagsPattern: Pattern = Pattern.compile("[^>]+(?=</code>)")
-        val extractRgbPattern: Pattern = Pattern.compile("[^(]+(?=\\))")
 
         val colorsMatcher: Matcher = extractColorsPattern.matcher(serverResponse)
-        var tagsMatcher: Matcher = extractFromTagsPattern.matcher(serverResponse)
-        var rgbMatcher: Matcher = extractRgbPattern.matcher(serverResponse)
+        var tagsMatcher: Matcher
 
         var counter = 0
         var color = ColorModel()
@@ -30,12 +28,10 @@ class WebPageParser {
             when (counter) {
                 0 -> {
                     color = ColorModel()
-                    color.name = tagsMatcher.group()
+                    color.name = tagsMatcher.group().toUpperCase()
                 }
                 1 -> color.hex = tagsMatcher.group()
                 2 -> {
-//                    rgbMatcher = extractRgbPattern.matcher(tagsMatcher.group())
-//                    rgbMatcher.find()
                     color.rgb = tagsMatcher.group()
                     colors += color
                 }
@@ -44,9 +40,6 @@ class WebPageParser {
             if (counter == 2) counter = 0 else counter++
         }
 
-        colors.forEach {
-            Log.d("COLOR", it.toString())
-        }
         return colors
     }
 

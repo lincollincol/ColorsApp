@@ -4,10 +4,8 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.graphics.red
 import androidx.recyclerview.widget.RecyclerView
 import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.R
@@ -35,7 +33,7 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>() {
         return ColorViewHolder(
             LayoutInflater.from(
                 parent.context
-            ).inflate(R.layout.color_list_item, parent, false)
+            ).inflate(R.layout.item_color, parent, false)
         )
     }
 

@@ -1,5 +1,6 @@
 package linc.com.colorsapp.ui.details
 
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,12 +11,20 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.transition.ChangeBounds
 import linc.com.colorsapp.R
 import linc.com.colorsapp.domain.ColorModel
+import linc.com.colorsapp.ui.NavigatorActivity
+import linc.com.colorsapp.ui.onwcolors.OwnColorsFragment
 import linc.com.colorsapp.utils.ColorUtil
 
 class ColorDetailsFragment : DialogFragment() {
+
+    companion object {
+        fun newInstance(bundle: Bundle) = ColorDetailsFragment()
+            .apply {
+                arguments = bundle
+            }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +52,12 @@ class ColorDetailsFragment : DialogFragment() {
         view.findViewById<TextView>(R.id.colorRgbCode)?.text = color.rgb
 
         return view
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        println("POP")
+//        (activity as NavigatorActivity).popBack()
+        super.onDismiss(dialog)
     }
 
 }
