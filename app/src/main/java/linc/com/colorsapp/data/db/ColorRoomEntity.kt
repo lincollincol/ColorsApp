@@ -9,5 +9,7 @@ class ColorRoomEntity(
     val id: String,
     var name: String,
     var hex: String,
-    var rgb: String
+    var rgb: String,
+    var saved: Boolean,
+    var custom: Boolean
 )

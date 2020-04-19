@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import kotlinx.android.synthetic.main.fragment_colors.*
 import linc.com.colorsapp.ColorsApp
 
 import linc.com.colorsapp.R
@@ -17,7 +16,7 @@ import linc.com.colorsapp.data.api.ColorsApi
 import linc.com.colorsapp.data.mappers.ColorModelMapper
 import linc.com.colorsapp.data.repository.ColorsRepositoryImpl
 import linc.com.colorsapp.domain.ColorModel
-import linc.com.colorsapp.domain.ColorsInteractorImpl
+import linc.com.colorsapp.domain.colors.ColorsInteractorImpl
 import linc.com.colorsapp.ui.NavigatorActivity
 import linc.com.colorsapp.ui.details.ColorDetailsFragment
 import linc.com.colorsapp.utils.WebPageParser
@@ -54,6 +53,11 @@ class ColorsFragment : Fragment(), ColorsView, ColorsAdapter.ColorClickListener 
         presenter?.bind(this)
     }
 
+    override fun onStop() {
+        super.onStop()
+        presenter?.unbind()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -82,16 +86,11 @@ class ColorsFragment : Fragment(), ColorsView, ColorsAdapter.ColorClickListener 
     }
 
     override fun showColors(colors: List<ColorModel>, cardHeights: List<Int>) {
-        colorsAdapter.setData(colors, cardHeights)
+        colorsAdapter.setColors(colors, cardHeights)
     }
 
     override fun showError(message: String) {
         Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        presenter?.unbind()
     }
 
     override fun onClick(colorModel: ColorModel) {

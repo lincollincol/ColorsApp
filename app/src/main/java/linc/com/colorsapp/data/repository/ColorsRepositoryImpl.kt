@@ -1,6 +1,7 @@
 package linc.com.colorsapp.data.repository
 
 import androidx.room.PrimaryKey
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import linc.com.colorsapp.data.api.ColorsApi
 import linc.com.colorsapp.data.db.ColorsDao
@@ -16,11 +17,12 @@ class ColorsRepositoryImpl(
     private val webPageParser: WebPageParser
 ) : ColorsRepository {
 
-    override fun getColors(): Single<List<ColorModel>> = Single.create {
+    override fun getAllColors(): Single<List<ColorModel>> = Single.create {
+        // todo make other dep to internet
         if(colorsDao.getCount() == 0) {
             val response = colorsApi.getColors().execute()
             val models = webPageParser.parseHtmlResponse(response.body())
-            colorsDao.insert(models.map {
+            colorsDao.insertColors(models.map {
                     model -> colorModelMapper.toColorRoomEntity(model)
             })
             it.onSuccess(models)
@@ -30,6 +32,30 @@ class ColorsRepositoryImpl(
             })
         }
     }
+
+    override fun getSavedColors(): Single<List<ColorModel>> {
+        return Single.create {
+            it.onSuccess(colorsDao.getSaved().map {
+                    entity -> colorModelMapper.toColorModel(entity)
+            })
+        }
+    }
+
+    override fun getCustomColors(): Single<List<ColorModel>> {
+        return Single.create {
+            it.onSuccess(colorsDao.getCustom().map {
+                    entity -> colorModelMapper.toColorModel(entity)
+            })
+        }
+    }
+
+    override fun saveColor(color: ColorModel): Completable {
+        return Completable.create {
+            colorsDao.insert(colorModelMapper.toColorRoomEntity(color))
+            it.onComplete()
+        }
+    }
+
 
 
 }

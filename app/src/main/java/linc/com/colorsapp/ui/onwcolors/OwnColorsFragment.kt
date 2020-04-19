@@ -6,29 +6,65 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import linc.com.colorsapp.ColorsApp
 
 import linc.com.colorsapp.R
+import linc.com.colorsapp.data.api.ColorsApi
+import linc.com.colorsapp.data.mappers.ColorModelMapper
+import linc.com.colorsapp.data.repository.ColorsRepositoryImpl
 import linc.com.colorsapp.domain.ColorModel
+import linc.com.colorsapp.domain.owncolors.OwnColorsInteractorImpl
 import linc.com.colorsapp.ui.NavigatorActivity
 import linc.com.colorsapp.ui.colors.ColorsAdapter
 import linc.com.colorsapp.ui.details.ColorDetailsFragment
+import linc.com.colorsapp.ui.newcolor.NewColorFragment
+import linc.com.colorsapp.utils.WebPageParser
 
-class OwnColorsFragment : Fragment(), View.OnClickListener, ColorsAdapter.ColorClickListener {
+class OwnColorsFragment : Fragment(), OwnColorsView, View.OnClickListener, ColorsAdapter.ColorClickListener, NewColorFragment.OnSaveListener {
 
     private lateinit var colorsAdapter: ColorsAdapter
+    private var presenter: OwnColorsPresenter? = null
 
     companion object {
         fun newInstance() = OwnColorsFragment()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if(presenter == null) {
+            presenter = OwnColorsPresenter(
+                OwnColorsInteractorImpl(
+                    ColorsRepositoryImpl(
+                        ColorsApp.colorsDatabase.colorsDao(),
+                        ColorsApp.retrofit.create(ColorsApi::class.java),
+                        ColorModelMapper(),
+                        WebPageParser()
+                    )
+                )
+            )
+        }
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter?.bind(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter?.unbind()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_own_colors, container, false)
     }
 
@@ -36,13 +72,6 @@ class OwnColorsFragment : Fragment(), View.OnClickListener, ColorsAdapter.ColorC
         super.onViewCreated(view, savedInstanceState)
         colorsAdapter = ColorsAdapter().apply {
             setOnColorClickListener(this@OwnColorsFragment)
-            setData(
-                arrayListOf(
-                    ColorModel("BLACK", "#000000", "rgb(0,0,0)"),
-                    ColorModel("WHITE", "#ffffff", "rgb(255, 255, 255)")
-                ),
-                arrayListOf(504, 308)
-            )
         }
 
         val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -57,6 +86,9 @@ class OwnColorsFragment : Fragment(), View.OnClickListener, ColorsAdapter.ColorC
         }
 
         view.findViewById<FloatingActionButton>(R.id.newColor).setOnClickListener(this)
+
+
+        presenter?.getColors()
     }
 
     override fun onClick(colorModel: ColorModel) {
@@ -68,6 +100,28 @@ class OwnColorsFragment : Fragment(), View.OnClickListener, ColorsAdapter.ColorC
     }
 
     override fun onClick(v: View?) {
-        println("CLICKED")
+        (activity as NavigatorActivity)
+            .navigateToDialog(NewColorFragment.newInstance()
+                .apply {
+                    setOnSaveListener(this@OwnColorsFragment)
+                }
+            )
+    }
+
+    override fun onSave(colorModel: ColorModel) {
+        println(colorModel.toString())
+        presenter?.saveColor(colorModel)
+    }
+
+    override fun showColors(colors: List<ColorModel>, cardHeights: List<Int>) {
+        colorsAdapter.setColors(colors, cardHeights)
+    }
+
+    override fun showNewColor(color: ColorModel, cardHeight: Int) {
+        colorsAdapter.insertColor(color, cardHeight)
+    }
+
+    override fun showError(message: String) {
+        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
     }
 }

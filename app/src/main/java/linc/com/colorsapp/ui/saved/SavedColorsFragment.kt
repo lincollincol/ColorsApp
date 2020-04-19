@@ -33,7 +33,7 @@ class SavedColorsFragment : Fragment(), ColorsAdapter.ColorClickListener {
         super.onViewCreated(view, savedInstanceState)
         colorsAdapter = ColorsAdapter().apply {
             setOnColorClickListener(this@SavedColorsFragment)
-            setData(arrayListOf(
+            setColors(arrayListOf(
                 ColorModel("BLACK", "#000000", "rgb(0,0,0)"),
                 ColorModel("WHITE", "#ffffff", "rgb(255, 255, 255)")),
                 arrayListOf(504, 308)

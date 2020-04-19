@@ -19,9 +19,15 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>() {
     private val cardHeights = mutableListOf<Int>()
     private lateinit var colorClickListener: ColorClickListener
 
-    fun setData(colorModels: List<ColorModel>, cardHeights: List<Int>) {
+    fun setColors(colorModels: List<ColorModel>, cardHeights: List<Int>) {
         this.colorModels.updateAll(colorModels)
         this.cardHeights.updateAll(cardHeights)
+        notifyDataSetChanged()
+    }
+
+    fun insertColor(colorModel: ColorModel, cardHeight: Int) {
+        this.colorModels.add(colorModel)
+        this.cardHeights.add(cardHeight)
         notifyDataSetChanged()
     }
 

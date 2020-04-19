@@ -10,14 +10,20 @@ class ColorModelMapper {
     fun toColorModel(colorRoomEntity: ColorRoomEntity) = ColorModel(
         name = colorRoomEntity.name,
         hex = colorRoomEntity.hex,
-        rgb = colorRoomEntity.rgb
+        rgb = colorRoomEntity.rgb,
+        saved = colorRoomEntity.saved,
+        custom = colorRoomEntity.custom
     )
+
+    // TODO: hardcode to const
 
     fun toColorRoomEntity(colorModel: ColorModel) = ColorRoomEntity(
         id = KeyGenerator.generateRandom(),
-        name = colorModel.name!!,
-        hex = colorModel.hex!!,
-        rgb = colorModel.rgb!!
+        name = colorModel.name ?: "White",
+        hex = colorModel.hex ?: "#FFFFFF",
+        rgb = colorModel.rgb ?: "rgb(255, 255, 255)",
+        saved = colorModel.saved!!,
+        custom = colorModel.custom!!
     )
 
     fun toColorModelsList(colorRoomEntities: List<ColorRoomEntity>) =

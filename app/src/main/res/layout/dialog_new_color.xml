@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:menu="@menu/menu_toolbar_items"
+            app:title="@string/title_toolbar_new_color"
+            app:navigationIcon="@drawable/ic_close"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <EditText
+            android:id="@+id/colorTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_color_title"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/colorPicker"
+            app:layout_constraintStart_toStartOf="@id/colorPicker"
+            app:layout_constraintEnd_toEndOf="@id/colorPicker"/>
+
+        <com.skydoves.colorpickerview.ColorPickerView
+            android:id="@+id/colorPicker"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            app:palette="@drawable/palette"
+            app:selector="@drawable/wheel"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/colorHexCode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            app:layout_constraintStart_toStartOf="@id/colorPicker"
+            app:layout_constraintEnd_toEndOf="@id/colorPicker"
+            app:layout_constraintTop_toBottomOf="@id/colorPicker"
+            app:layout_constraintBottom_toTopOf="@id/colorRgbCode"
+            tools:text="#FFFFFF"/>
+
+        <TextView
+            android:id="@+id/colorRgbCode"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            app:layout_constraintStart_toStartOf="@id/colorPicker"
+            app:layout_constraintEnd_toEndOf="@id/colorPicker"
+            app:layout_constraintTop_toBottomOf="@id/colorHexCode"
+            app:layout_constraintBottom_toTopOf="@id/colorTemplate"
+            tools:text="rgb(255,255,255)"/>
+
+        <View
+            android:id="@+id/colorTemplate"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:background="@drawable/shape_rectangle_round"
+            app:layout_constraintStart_toStartOf="@id/colorPicker"
+            app:layout_constraintEnd_toEndOf="@id/colorPicker"
+            app:layout_constraintTop_toBottomOf="@id/colorRgbCode"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
