@@ -2,9 +2,8 @@ package linc.com.colorsapp.ui
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.activity_main.*
@@ -16,6 +15,7 @@ import linc.com.colorsapp.utils.Constants.Companion.COLORS_FRAGMENT
 import linc.com.colorsapp.utils.Constants.Companion.OWN_FRAGMENT
 import linc.com.colorsapp.utils.Constants.Companion.SAVED_FRAGMENT
 import linc.com.colorsapp.utils.ScreenNavigator
+import linc.com.colorsapp.utils.isNull
 import nl.joery.animatedbottombar.AnimatedBottomBar
 
 

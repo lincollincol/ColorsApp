@@ -2,6 +2,10 @@ package linc.com.colorsapp.utils
 
 import android.os.Parcel
 
+inline fun <T> T.isNull(func: ()-> T): T {
+    return this ?: func()
+}
+
 fun <E> MutableList<E>.updateAll(newList: List<E>) {
     this.clear()
     this.addAll(newList)

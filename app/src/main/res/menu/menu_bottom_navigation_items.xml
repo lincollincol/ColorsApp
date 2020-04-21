@@ -6,7 +6,7 @@
         android:title="@string/menu_tab_all" />
     <item
         android:id="@+id/tab_alarm"
-        android:icon="@drawable/ic_favorite"
+        android:icon="@drawable/ic_saved"
         android:title="@string/menu_tab_saved" />
     <item
         android:id="@+id/tab_bread"

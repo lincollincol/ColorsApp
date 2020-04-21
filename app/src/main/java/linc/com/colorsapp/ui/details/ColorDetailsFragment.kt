@@ -16,6 +16,7 @@ import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.ui.NavigatorActivity
 import linc.com.colorsapp.ui.onwcolors.OwnColorsFragment
 import linc.com.colorsapp.utils.ColorUtil
+import linc.com.colorsapp.utils.Constants.Companion.COLOR_ID
 
 class ColorDetailsFragment : DialogFragment() {
 
@@ -38,7 +39,7 @@ class ColorDetailsFragment : DialogFragment() {
     ): View? {
         val view = inflater.inflate(R.layout.dialog_color_details, container, false)
 
-        val color = arguments?.get("COLOR") as ColorModel
+        val color = arguments?.get(COLOR_ID) as ColorModel
 
         view.findViewById<CardView>(R.id.card).apply {
             setCardBackgroundColor(Color.parseColor(color.hex))

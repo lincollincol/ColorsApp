@@ -7,6 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.ActionMode
+import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -19,15 +23,22 @@ import linc.com.colorsapp.data.repository.ColorsRepositoryImpl
 import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.domain.owncolors.OwnColorsInteractorImpl
 import linc.com.colorsapp.ui.NavigatorActivity
-import linc.com.colorsapp.ui.colors.ColorsAdapter
+import linc.com.colorsapp.ui.adapters.ColorsAdapter
+import linc.com.colorsapp.ui.adapters.selection.ColorKeyProvider
+import linc.com.colorsapp.ui.adapters.selection.ColorLookup
+import linc.com.colorsapp.ui.custom.SelectionActionMode
 import linc.com.colorsapp.ui.details.ColorDetailsFragment
 import linc.com.colorsapp.ui.newcolor.NewColorFragment
+import linc.com.colorsapp.utils.Constants
 import linc.com.colorsapp.utils.WebPageParser
+import linc.com.colorsapp.utils.isNull
 
 class OwnColorsFragment : Fragment(), OwnColorsView, View.OnClickListener, ColorsAdapter.ColorClickListener, NewColorFragment.OnSaveListener {
 
     private lateinit var colorsAdapter: ColorsAdapter
+    private lateinit var colorKeyProvider: ColorKeyProvider
     private var presenter: OwnColorsPresenter? = null
+    private var actionMode: ActionMode? = null
 
     companion object {
         fun newInstance() = OwnColorsFragment()
@@ -59,6 +70,8 @@ class OwnColorsFragment : Fragment(), OwnColorsView, View.OnClickListener, Color
     override fun onStop() {
         super.onStop()
         presenter?.unbind()
+        actionMode?.finish()
+        actionMode = null
     }
 
     override fun onCreateView(
@@ -70,23 +83,60 @@ class OwnColorsFragment : Fragment(), OwnColorsView, View.OnClickListener, Color
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        colorsAdapter = ColorsAdapter().apply {
-            setOnColorClickListener(this@OwnColorsFragment)
+        colorKeyProvider = ColorKeyProvider()
+        colorsAdapter = ColorsAdapter()
+
+        val layoutManager = StaggeredGridLayoutManager(
+            2, StaggeredGridLayoutManager.VERTICAL).apply {
+                gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
         }
 
-        val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-            .apply {
-                gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
-            }
+        view.findViewById<FloatingActionButton>(R.id.newColor).setOnClickListener(this)
 
-        view.findViewById<RecyclerView>(R.id.colorsList).apply {
+        val rv = view.findViewById<RecyclerView>(R.id.colorsList).apply {
             adapter = colorsAdapter
             setHasFixedSize(true)
             setLayoutManager(layoutManager)
         }
 
-        view.findViewById<FloatingActionButton>(R.id.newColor).setOnClickListener(this)
+        val tracker = SelectionTracker.Builder<ColorModel>(
+            Constants.SELECTION_ID,
+            rv,
+            colorKeyProvider,
+            ColorLookup(rv),
+            StorageStrategy.createParcelableStorage(ColorModel::class.java)
+        ).build()
 
+        tracker.addObserver(object : SelectionTracker.SelectionObserver<ColorModel>() {
+            override fun onSelectionChanged() {
+                super.onSelectionChanged()
+
+                actionMode = when(tracker.hasSelection()) {
+                    true -> {
+                        actionMode.isNull {
+                            (activity as AppCompatActivity)
+                                .startSupportActionMode(
+                                    SelectionActionMode<ColorModel>(
+                                        activity!!.applicationContext,
+                                        tracker,
+                                        SelectionActionMode.Type.DELETE)
+                                )
+                        }
+                    }
+
+                    false -> {
+                        actionMode?.finish()
+                        null
+                    }
+                }
+
+            }
+        })
+
+        colorsAdapter.apply {
+            setOnColorClickListener(this@OwnColorsFragment)
+            setSelectionTracker(tracker)
+        }
 
         presenter?.getColors()
     }
@@ -115,6 +165,7 @@ class OwnColorsFragment : Fragment(), OwnColorsView, View.OnClickListener, Color
 
     override fun showColors(colors: List<ColorModel>, cardHeights: List<Int>) {
         colorsAdapter.setColors(colors, cardHeights)
+        colorKeyProvider.setColors(colors)
     }
 
     override fun showNewColor(color: ColorModel, cardHeight: Int) {
