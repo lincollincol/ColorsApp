@@ -30,6 +30,7 @@ import linc.com.colorsapp.ui.custom.SelectionActionMode
 import linc.com.colorsapp.ui.details.ColorDetailsFragment
 import linc.com.colorsapp.ui.newcolor.NewColorFragment
 import linc.com.colorsapp.utils.Constants
+import linc.com.colorsapp.utils.Constants.Companion.COLOR_ID
 import linc.com.colorsapp.utils.WebPageParser
 import linc.com.colorsapp.utils.isNull
 
@@ -121,6 +122,11 @@ class OwnColorsFragment : Fragment(), OwnColorsView, View.OnClickListener, Color
                                         tracker,
                                         SelectionActionMode.Type.DELETE)
                                 )
+                        }.apply {
+                            this?.title = view.context.getString(
+                                R.string.title_selected_items,
+                                tracker.selection.size()
+                            )
                         }
                     }
 
@@ -143,7 +149,7 @@ class OwnColorsFragment : Fragment(), OwnColorsView, View.OnClickListener, Color
 
     override fun onClick(colorModel: ColorModel) {
         val data = Bundle().apply {
-            putParcelable("COLOR", colorModel)
+            putParcelable(COLOR_ID, colorModel)
         }
         (activity as NavigatorActivity)
             .navigateToDialog(ColorDetailsFragment.newInstance(data))

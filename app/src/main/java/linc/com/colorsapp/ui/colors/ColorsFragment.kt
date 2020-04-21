@@ -13,6 +13,7 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import kotlinx.android.synthetic.main.dialog_new_color.*
 import linc.com.colorsapp.ColorsApp
 
 import linc.com.colorsapp.R
@@ -118,6 +119,11 @@ class ColorsFragment : Fragment(), ColorsView, ColorsAdapter.ColorClickListener 
                                         tracker,
                                         SelectionActionMode.Type.SAVE)
                                 )
+                        }.apply {
+                            this?.title = view.context.getString(
+                                R.string.title_selected_items,
+                                tracker.selection.size()
+                            )
                         }
                     }
 

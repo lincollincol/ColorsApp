@@ -1,14 +1,22 @@
 package linc.com.colorsapp.ui.adapters
 
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.annotation.IntegerRes
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.Fade
+import androidx.transition.TransitionManager
 import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.R
 import linc.com.colorsapp.ui.adapters.selection.ColorDetails
@@ -70,21 +78,43 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>() {
 
         private var selected: Boolean = false
 
-        private val card = itemView.findViewById<CardView>(R.id.card)
+        private val card = itemView.findViewById<FrameLayout>(R.id.card)
         private val title = itemView.findViewById<TextView>(R.id.title)
+        private val iconSelected = itemView.findViewById<ImageView>(R.id.iconSelected)
 
         fun bind(colorModel: ColorModel, cardHeight: Int, selected: Boolean) {
-
             this.selected = selected
+
+            TransitionManager.beginDelayedTransition(card,
+                Fade(Fade.IN)
+                    .setDuration(500)
+                    .setInterpolator(AccelerateDecelerateInterpolator()))
+
+            @ColorInt val readableColor = ColorUtil
+                .getReadableColor(Color.parseColor(colorModel.hex))
 
             title.apply {
                 text = colorModel.name
-                setTextColor(ColorUtil.getReadableColor(Color.parseColor(colorModel.hex)))
+                setTextColor(readableColor)
             }
 
             card.apply {
-                setCardBackgroundColor(Color.parseColor(colorModel.hex))
+                background.setColorFilter(
+                        Color.parseColor(colorModel.hex),
+                        PorterDuff.Mode.SRC_IN
+                    )
+                isSelected = selected
                 minimumHeight = cardHeight
+            }
+
+            iconSelected.apply {
+                visibility = if(selected) View.VISIBLE else View.GONE
+                setBackgroundResource(
+                    if(readableColor == Color.WHITE)
+                        R.drawable.ic_selected_white
+                    else
+                        R.drawable.ic_selected_black
+                )
             }
 
             itemView.setOnClickListener(this)

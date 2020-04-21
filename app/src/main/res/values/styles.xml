@@ -6,6 +6,7 @@
         <item name="colorPrimary">@android:color/black</item>
         <item name="colorPrimaryDark">@android:color/black</item>
         <item name="colorAccent">@android:color/black</item>
+
     </style>
 
     <!-- Color dialog style-->
@@ -33,6 +34,18 @@
     <style name="FullScreenDialogAnimations">
         <item name="android:windowEnterAnimation">@anim/slide_up</item>
         <item name="android:windowExitAnimation">@anim/slide_down</item>
+    </style>
+
+    <!-- Item selection action mode style-->
+    <style name="Widget.AppCompat.ActionMode" parent="">
+        <item name="background">@android:color/black</item>
+        <item name="height">?attr/actionBarSize</item>
+        <item name="titleTextStyle">@style/ActionModeTitleStyle</item>
+    </style>
+
+    <style name="ActionModeTitleStyle">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
 </resources>
