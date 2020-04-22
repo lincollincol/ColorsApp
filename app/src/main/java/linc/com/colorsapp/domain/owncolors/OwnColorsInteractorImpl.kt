@@ -13,12 +13,16 @@ class OwnColorsInteractorImpl(
         return colorsRepository.getCustomColors()
     }
 
-    override fun saveColor(color: ColorModel): Completable {
-        return colorsRepository.saveColor(
+    override fun saveCustomColor(color: ColorModel): Completable {
+        return colorsRepository.saveCustomColor(
             color.apply {
                 custom = true
             }
         )
+    }
+
+    override fun deleteColors(colors: List<ColorModel>): Completable {
+        return colorsRepository.deleteColors(colors)
     }
 
 }

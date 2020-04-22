@@ -26,18 +26,4 @@ class ColorModelMapper {
         custom = colorModel.custom!!
     )
 
-    fun toColorModelsList(colorRoomEntities: List<ColorRoomEntity>) =
-        mutableListOf<ColorModel>().apply {
-            colorRoomEntities.forEach {
-                this.add(toColorModel(it))
-            }
-        }
-
-    fun toColorEntitiesList(colorModels: List<ColorModel>) =
-        mutableListOf<ColorRoomEntity>().apply {
-            colorModels.forEach {
-                this.add(toColorRoomEntity(it))
-            }
-        }
-
 }

@@ -38,6 +38,14 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun deleteColor(colorModel: ColorModel) {
+        val position = this.colorModels.indexOf(colorModel)
+        this.colorModels.removeAt(position)
+        this.cardHeights.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, this.colorModels.count())
+    }
+
     fun insertColor(colorModel: ColorModel, cardHeight: Int) {
         this.colorModels.add(colorModel)
         this.cardHeights.add(cardHeight)
@@ -110,10 +118,10 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>() {
             iconSelected.apply {
                 visibility = if(selected) View.VISIBLE else View.GONE
                 setBackgroundResource(
-                    if(readableColor == Color.WHITE)
-                        R.drawable.ic_selected_white
-                    else
-                        R.drawable.ic_selected_black
+                    when(readableColor) {
+                        Color.WHITE-> R.drawable.ic_selected_white
+                        else -> R.drawable.ic_selected_black
+                    }
                 )
             }
 

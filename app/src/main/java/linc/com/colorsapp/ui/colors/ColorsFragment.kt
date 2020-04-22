@@ -4,6 +4,7 @@ package linc.com.colorsapp.ui.colors
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -32,11 +33,13 @@ import linc.com.colorsapp.utils.Constants.Companion.COLOR_ID
 import linc.com.colorsapp.utils.Constants.Companion.SELECTION_ID
 import linc.com.colorsapp.utils.WebPageParser
 import linc.com.colorsapp.utils.isNull
+import linc.com.colorsapp.utils.toList
 
-class ColorsFragment : Fragment(), ColorsView, ColorsAdapter.ColorClickListener {
+class ColorsFragment : Fragment(), ColorsView, ColorsAdapter.ColorClickListener, SelectionActionMode.OnActionClickListener {
 
     private lateinit var colorsAdapter: ColorsAdapter
     private lateinit var colorKeyProvider: ColorKeyProvider
+    private lateinit var tracker: SelectionTracker<ColorModel>
     private var presenter: ColorsPresenter? = null
     private var actionMode: ActionMode? = null
 
@@ -98,7 +101,7 @@ class ColorsFragment : Fragment(), ColorsView, ColorsAdapter.ColorClickListener 
             setLayoutManager(layoutManager)
         }
 
-        val tracker = SelectionTracker.Builder<ColorModel>(
+        tracker = SelectionTracker.Builder(
             SELECTION_ID,
             rv,
             colorKeyProvider,
@@ -109,28 +112,25 @@ class ColorsFragment : Fragment(), ColorsView, ColorsAdapter.ColorClickListener 
         tracker.addObserver(object : SelectionTracker.SelectionObserver<ColorModel>() {
             override fun onSelectionChanged() {
                 super.onSelectionChanged()
-                actionMode = when(tracker.hasSelection()) {
-                    true -> {
-                        actionMode.isNull {
-                            (activity as AppCompatActivity)
-                                .startSupportActionMode(
-                                    SelectionActionMode<ColorModel>(
-                                        activity!!.applicationContext,
-                                        tracker,
-                                        SelectionActionMode.Type.SAVE)
-                                )
-                        }.apply {
-                            this?.title = view.context.getString(
-                                R.string.title_selected_items,
-                                tracker.selection.size()
-                            )
-                        }
-                    }
 
-                    false -> {
-                        actionMode?.finish()
-                        null
+                actionMode = if(tracker.hasSelection()) {
+                    actionMode.isNull {
+                        (activity as AppCompatActivity).startSupportActionMode(
+                            SelectionActionMode(
+                                activity!!.applicationContext,
+                                tracker,
+                                this@ColorsFragment,
+                                SelectionActionMode.Type.SAVE)
+                        )
+                    }.apply {
+                        this?.title = view.context.getString(
+                            R.string.title_selected_items,
+                            tracker.selection.size()
+                        )
                     }
+                }else {
+                    actionMode?.finish()
+                    null
                 }
 
             }
@@ -161,5 +161,8 @@ class ColorsFragment : Fragment(), ColorsView, ColorsAdapter.ColorClickListener 
             .navigateToDialog(ColorDetailsFragment.newInstance(data))
     }
 
+    override fun onActionClick(item: MenuItem?) {
+        presenter?.saveColors(tracker.toList())
+    }
 
 }

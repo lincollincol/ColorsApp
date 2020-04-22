@@ -4,6 +4,7 @@ package linc.com.colorsapp.ui.onwcolors
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -33,11 +34,18 @@ import linc.com.colorsapp.utils.Constants
 import linc.com.colorsapp.utils.Constants.Companion.COLOR_ID
 import linc.com.colorsapp.utils.WebPageParser
 import linc.com.colorsapp.utils.isNull
+import linc.com.colorsapp.utils.toList
 
-class OwnColorsFragment : Fragment(), OwnColorsView, View.OnClickListener, ColorsAdapter.ColorClickListener, NewColorFragment.OnSaveListener {
+class OwnColorsFragment : Fragment(),
+    OwnColorsView,
+    View.OnClickListener,
+    ColorsAdapter.ColorClickListener,
+    NewColorFragment.OnSaveListener,
+    SelectionActionMode.OnActionClickListener {
 
     private lateinit var colorsAdapter: ColorsAdapter
     private lateinit var colorKeyProvider: ColorKeyProvider
+    private lateinit var tracker: SelectionTracker<ColorModel>
     private var presenter: OwnColorsPresenter? = null
     private var actionMode: ActionMode? = null
 
@@ -100,44 +108,41 @@ class OwnColorsFragment : Fragment(), OwnColorsView, View.OnClickListener, Color
             setLayoutManager(layoutManager)
         }
 
-        val tracker = SelectionTracker.Builder<ColorModel>(
+        tracker = SelectionTracker.Builder<ColorModel>(
             Constants.SELECTION_ID,
             rv,
             colorKeyProvider,
             ColorLookup(rv),
             StorageStrategy.createParcelableStorage(ColorModel::class.java)
         ).build()
+         .apply {
+             addObserver(object : SelectionTracker.SelectionObserver<ColorModel>() {
+                 override fun onSelectionChanged() {
+                     super.onSelectionChanged()
 
-        tracker.addObserver(object : SelectionTracker.SelectionObserver<ColorModel>() {
-            override fun onSelectionChanged() {
-                super.onSelectionChanged()
+                     actionMode = if(tracker.hasSelection()) {
+                         actionMode.isNull {
+                             (activity as AppCompatActivity).startSupportActionMode(
+                                 SelectionActionMode(
+                                     activity!!.applicationContext,
+                                     tracker,
+                                     this@OwnColorsFragment,
+                                     SelectionActionMode.Type.DELETE)
+                             )
+                         }.apply {
+                             this?.title = view.context.getString(
+                                 R.string.title_selected_items,
+                                 tracker.selection.size()
+                             )
+                         }
+                     }else {
+                         actionMode?.finish()
+                         null
+                     }
 
-                actionMode = when(tracker.hasSelection()) {
-                    true -> {
-                        actionMode.isNull {
-                            (activity as AppCompatActivity)
-                                .startSupportActionMode(
-                                    SelectionActionMode<ColorModel>(
-                                        activity!!.applicationContext,
-                                        tracker,
-                                        SelectionActionMode.Type.DELETE)
-                                )
-                        }.apply {
-                            this?.title = view.context.getString(
-                                R.string.title_selected_items,
-                                tracker.selection.size()
-                            )
-                        }
-                    }
-
-                    false -> {
-                        actionMode?.finish()
-                        null
-                    }
-                }
-
-            }
-        })
+                 }
+             })
+         }
 
         colorsAdapter.apply {
             setOnColorClickListener(this@OwnColorsFragment)
@@ -166,7 +171,7 @@ class OwnColorsFragment : Fragment(), OwnColorsView, View.OnClickListener, Color
 
     override fun onSave(colorModel: ColorModel) {
         println(colorModel.toString())
-        presenter?.saveColor(colorModel)
+        presenter?.saveCustomColor(colorModel)
     }
 
     override fun showColors(colors: List<ColorModel>, cardHeights: List<Int>) {
@@ -178,7 +183,16 @@ class OwnColorsFragment : Fragment(), OwnColorsView, View.OnClickListener, Color
         colorsAdapter.insertColor(color, cardHeight)
     }
 
+    override fun deleteColor(color: ColorModel) {
+        colorsAdapter.deleteColor(color)
+    }
+
+
     override fun showError(message: String) {
         Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onActionClick(item: MenuItem?) {
+        presenter?.deleteColors(tracker.toList())
     }
 }

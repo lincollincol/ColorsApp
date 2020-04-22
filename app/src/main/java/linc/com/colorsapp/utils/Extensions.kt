@@ -1,6 +1,7 @@
 package linc.com.colorsapp.utils
 
 import android.os.Parcel
+import androidx.recyclerview.selection.SelectionTracker
 
 inline fun <T> T.isNull(func: ()-> T): T {
     return this ?: func()
@@ -25,4 +26,8 @@ fun Parcel.readBoolean(): Boolean? {
         0 -> false
         else -> null
     }
+}
+
+fun <T> SelectionTracker<T>.toList() = mutableListOf<T>().apply {
+    selection.forEach { add(it) }
 }

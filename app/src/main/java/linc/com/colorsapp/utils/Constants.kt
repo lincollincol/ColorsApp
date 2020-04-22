@@ -5,12 +5,12 @@ class Constants {
         //
         // Storage
         //
-        const val BASE_URL = "https://colours.neilorangepeel.com"
+        const val DATABASE_NAME = "colors_database"
 
         //
         // Network
         //
-        const val DATABASE_NAME = "colors_database"
+        const val BASE_URL = "https://colours.neilorangepeel.com"
 
         //
         // Ui

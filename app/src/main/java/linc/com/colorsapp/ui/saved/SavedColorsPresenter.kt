@@ -1,17 +1,19 @@
-package linc.com.colorsapp.ui.onwcolors
+package linc.com.colorsapp.ui.saved
 
-import android.graphics.Color
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import linc.com.colorsapp.domain.ColorModel
-import linc.com.colorsapp.domain.owncolors.OwnColorsInteractor
+import linc.com.colorsapp.domain.saved.SavedColorsInteractor
+import linc.com.colorsapp.ui.onwcolors.OwnColorsView
 import kotlin.random.Random
 
-class OwnColorsPresenter (private val ownColorsInteractor: OwnColorsInteractor) {
+class SavedColorsPresenter(
+    private val savedColorsInteractor: SavedColorsInteractor
+) {
 
-    private var view: OwnColorsView? = null
+    private var view: SavedColorsView? = null
 
-    fun bind(view: OwnColorsView) {
+    fun bind(view: SavedColorsView) {
         this.view = view
     }
 
@@ -20,7 +22,7 @@ class OwnColorsPresenter (private val ownColorsInteractor: OwnColorsInteractor) 
     }
 
     fun getColors() {
-        this.ownColorsInteractor.execute()
+        savedColorsInteractor.execute()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -35,20 +37,8 @@ class OwnColorsPresenter (private val ownColorsInteractor: OwnColorsInteractor) 
             })
     }
 
-    fun saveCustomColor(color: ColorModel) {
-        this.ownColorsInteractor
-            .saveCustomColor(color)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                view?.showNewColor(color, Random.nextInt(400, 700))
-            }, {
-                view?.showError(it.localizedMessage)
-            })
-    }
-
     fun deleteColors(colors: List<ColorModel>) {
-        this.ownColorsInteractor.deleteColors(colors)
+        this.savedColorsInteractor.deleteColors(colors)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {

@@ -3,6 +3,7 @@ package linc.com.colorsapp.ui.colors
 import android.util.Log
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.domain.colors.ColorsInteractor
 import kotlin.random.Random
 
@@ -33,6 +34,13 @@ class ColorsPresenter(private val colorsInteractor: ColorsInteractor) {
                 view?.showError(it.localizedMessage)
                 Log.d("ERROR", it.localizedMessage)
             })
+    }
+
+    fun saveColors(colors: List<ColorModel>) {
+        colorsInteractor.saveColors(colors)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
     }
 
 }
