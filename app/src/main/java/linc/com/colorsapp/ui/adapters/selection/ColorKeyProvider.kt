@@ -14,4 +14,8 @@ class ColorKeyProvider : ItemKeyProvider<ColorModel>(SCOPE_CACHED) {
     fun setColors(colors: List<ColorModel>) {
         this.colors.updateAll(colors)
     }
+
+    fun addColor(color: ColorModel) {
+        this.colors.add(color)
+    }
 }

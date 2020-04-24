@@ -50,25 +50,19 @@ class ColorsRepositoryImpl(
         }
     }
 
-    override fun saveCustomColor(color: ColorModel): Completable {
-        return Completable.create {
-            colorsDao.insert(colorModelMapper.toColorRoomEntity(color))
-            it.onComplete()
-        }
-    }
-
-    override fun saveColors(colors: List<ColorModel>): Completable {
-        return Completable.create {
-            colorsDao.insertColors(colors.map { colorModel ->
-                colorModelMapper.toColorRoomEntity(colorModel)
+    override fun saveCustomColor(color: ColorModel): Single<ColorModel> {
+        return Single.create {
+            val colorRoomEntity = colorModelMapper.toColorRoomEntity(color)
+            colorsDao.insert(colorRoomEntity)
+            it.onSuccess(color.apply {
+                id = colorRoomEntity.id
             })
-            it.onComplete()
         }
     }
-
-    override fun deleteColors(colors: List<ColorModel>): Completable {
+    
+    override fun updateColors(colors: List<ColorModel>): Completable {
         return Completable.create {
-            colorsDao.deleteColors(colors.map { colorModel ->
+            colorsDao.updateColors(colors.map { colorModel ->
                 colorModelMapper.toColorRoomEntity(colorModel)
             })
             it.onComplete()

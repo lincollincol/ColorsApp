@@ -181,12 +181,12 @@ class OwnColorsFragment : Fragment(),
 
     override fun showNewColor(color: ColorModel, cardHeight: Int) {
         colorsAdapter.insertColor(color, cardHeight)
+        colorKeyProvider.addColor(color)
     }
 
     override fun deleteColor(color: ColorModel) {
         colorsAdapter.deleteColor(color)
     }
-
 
     override fun showError(message: String) {
         Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()

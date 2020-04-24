@@ -98,6 +98,8 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>() {
                     .setDuration(500)
                     .setInterpolator(AccelerateDecelerateInterpolator()))
 
+            println(colorModel.hex)
+
             @ColorInt val readableColor = ColorUtil
                 .getReadableColor(Color.parseColor(colorModel.hex))
 

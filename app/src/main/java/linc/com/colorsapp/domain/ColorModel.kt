@@ -6,6 +6,7 @@ import linc.com.colorsapp.utils.readBoolean
 import linc.com.colorsapp.utils.writeBoolean
 
 data class ColorModel (
+    var id: String? = null,
     var name: String? = null,
     var hex: String? = null,
     var rgb: String? = null,
@@ -17,12 +18,13 @@ data class ColorModel (
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
+        parcel.readString(),
         parcel.readBoolean(),
         parcel.readBoolean()
     )
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeStringArray(arrayOf(name, hex, rgb))
+        dest?.writeStringArray(arrayOf(id, name, hex, rgb))
         dest?.writeBoolean(saved)
         dest?.writeBoolean(custom)
     }

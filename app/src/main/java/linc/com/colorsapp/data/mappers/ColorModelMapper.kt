@@ -1,13 +1,13 @@
 package linc.com.colorsapp.data.mappers
 
-import android.graphics.Color
 import linc.com.colorsapp.data.db.ColorRoomEntity
 import linc.com.colorsapp.domain.ColorModel
-import linc.com.colorsapp.utils.KeyGenerator
+import java.util.*
 
 class ColorModelMapper {
 
     fun toColorModel(colorRoomEntity: ColorRoomEntity) = ColorModel(
+        id = colorRoomEntity.id,
         name = colorRoomEntity.name,
         hex = colorRoomEntity.hex,
         rgb = colorRoomEntity.rgb,
@@ -18,7 +18,7 @@ class ColorModelMapper {
     // TODO: hardcode to const
 
     fun toColorRoomEntity(colorModel: ColorModel) = ColorRoomEntity(
-        id = KeyGenerator.generateRandom(),
+        id = colorModel.id ?: UUID.randomUUID().toString(),
         name = colorModel.name ?: "White",
         hex = colorModel.hex ?: "#FFFFFF",
         rgb = colorModel.rgb ?: "rgb(255, 255, 255)",

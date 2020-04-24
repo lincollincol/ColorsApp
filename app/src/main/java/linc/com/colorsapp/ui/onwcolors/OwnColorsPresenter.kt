@@ -41,7 +41,7 @@ class OwnColorsPresenter (private val ownColorsInteractor: OwnColorsInteractor) 
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                view?.showNewColor(color, Random.nextInt(400, 700))
+                view?.showNewColor(it, Random.nextInt(400, 700))
             }, {
                 view?.showError(it.localizedMessage)
             })

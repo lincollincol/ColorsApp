@@ -42,9 +42,9 @@ class NewColorFragment : DialogFragment() {
         toolbar.setNavigationOnClickListener{ dismiss() }
         toolbar.setOnMenuItemClickListener {
             onSaveListener.onSave(ColorModel(
-                    colorTitle.text.toString(),
-                    colorHexCode.text.toString(),
-                    colorRgbCode.text.toString()
+                    name = colorTitle.text.toString(),
+                    hex = colorHexCode.text.toString(),
+                    rgb = colorRgbCode.text.toString()
             ))
             dismiss()
             true

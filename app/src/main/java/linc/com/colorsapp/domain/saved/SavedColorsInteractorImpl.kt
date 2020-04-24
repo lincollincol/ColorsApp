@@ -14,7 +14,10 @@ class SavedColorsInteractorImpl(
     }
 
     override fun deleteColors(colors: List<ColorModel>): Completable {
-        return colorsRepository.deleteColors(colors)
+        return colorsRepository.updateColors(colors.map {
+            it.saved = false
+            return@map it
+        })
     }
 
 }
