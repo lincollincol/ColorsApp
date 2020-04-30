@@ -59,7 +59,7 @@ class ColorsRepositoryImpl(
             })
         }
     }
-    
+
     override fun updateColors(colors: List<ColorModel>): Completable {
         return Completable.create {
             colorsDao.updateColors(colors.map { colorModel ->

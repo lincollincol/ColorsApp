@@ -9,7 +9,7 @@ interface ColorsDao {
     //
     // Get
     //
-    @Query("SELECT * FROM colors")
+    @Query("SELECT * FROM colors WHERE custom = 0")
     fun getAll(): List<ColorRoomEntity>
 
     @Query("SELECT * FROM colors WHERE saved = 1")

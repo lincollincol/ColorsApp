@@ -38,10 +38,12 @@ class SavedColorsPresenter(
     }
 
     fun deleteColors(colors: List<ColorModel>) {
+        println("DELETE COLORS 1 ${colors}")
         this.savedColorsInteractor.deleteColors(colors)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
+                println("DELETE COLORS ${colors}")
                 colors.forEach {
                     view?.deleteColor(it)
                 }

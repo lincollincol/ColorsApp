@@ -10,8 +10,8 @@ data class ColorModel (
     var name: String? = null,
     var hex: String? = null,
     var rgb: String? = null,
-    var saved: Boolean? = false,
-    var custom: Boolean? = false
+    var saved: Boolean = false,
+    var custom: Boolean = false
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -19,8 +19,8 @@ data class ColorModel (
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readBoolean(),
-        parcel.readBoolean()
+        parcel.readBoolean() ?: false,
+        parcel.readBoolean() ?: false
     )
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
