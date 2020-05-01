@@ -5,15 +5,11 @@ import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
-import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.Fade
-import androidx.transition.TransitionManager
 import linc.com.colorsapp.R
 import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.utils.ColorUtil
@@ -27,9 +23,12 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>(), Sel
     private lateinit var colorClickListener: ColorClickListener
     private lateinit var selectionManager: SelectionManager<ColorModel>
 
-    fun setColors(colorModels: List<ColorModel>, cardHeights: List<Int>) {
+    fun setColors(colorModels: MutableList<ColorModel>, cardHeights: List<Int>) {
+
         this.colorModels.updateAll(colorModels)
         this.cardHeights.updateAll(cardHeights)
+        //todo ???
+        notifyItemRangeChanged(0, colorModels.count())
         notifyDataSetChanged()
     }
 
@@ -37,15 +36,22 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>(), Sel
         val position = this.colorModels.indexOf(colorModel)
         this.colorModels.removeAt(position)
         this.cardHeights.removeAt(position)
-        println(position)
         notifyItemRemoved(position)
-        notifyDataSetChanged()
     }
 
     fun insertColor(colorModel: ColorModel, cardHeight: Int) {
         this.colorModels.add(colorModel)
         this.cardHeights.add(cardHeight)
-        notifyDataSetChanged()
+        notifyItemInserted(colorModels.count())
+    }
+
+    override fun selectionChanged(item: ColorModel) {
+        notifyItemChanged(colorModels.indexOf(item))
+    }
+
+    override fun selectionRemoved(rangeStart: Int, rangeEnd: Int) {
+        // todo const 1 to last element
+        notifyItemRangeChanged(rangeStart, rangeEnd-rangeStart+1)
     }
 
     fun setOnColorClickListener(colorClickListener: ColorClickListener) {
@@ -77,14 +83,6 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>(), Sel
         return colorModels.count()
     }
 
-    override fun selectionChanged(item: ColorModel) {
-        notifyItemChanged(colorModels.indexOf(item))
-    }
-
-    override fun selectionRemoved() {
-        notifyDataSetChanged()
-    }
-
     inner class ColorViewHolder(
         itemView: View
     ) : RecyclerView.ViewHolder(itemView),
@@ -95,14 +93,9 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>(), Sel
         private val card = itemView.findViewById<FrameLayout>(R.id.card)
         private val title = itemView.findViewById<TextView>(R.id.title)
         private val iconSelected = itemView.findViewById<ImageView>(R.id.iconSelected)
+        private val iconSaved = itemView.findViewById<ImageView>(R.id.iconSaved)
 
         fun bind(colorModel: ColorModel, cardHeight: Int, selected: Boolean) {
-
-            TransitionManager.beginDelayedTransition(card,
-                Fade(Fade.IN)
-                    .setDuration(500)
-                    .setInterpolator(AccelerateDecelerateInterpolator())
-            )
 
             @ColorInt val readableColor = ColorUtil
                 .getReadableColor(Color.parseColor(colorModel.hex))
@@ -129,6 +122,14 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>(), Sel
                 })
             }
 
+            iconSaved.apply {
+                visibility = if(colorModel.saved) View.VISIBLE else View.GONE
+                setBackgroundResource(when(readableColor) {
+                    Color.WHITE-> R.drawable.ic_save_white
+                    else -> R.drawable.ic_save_black
+                })
+            }
+
             itemView.setOnClickListener(this)
             itemView.setOnLongClickListener(this)
         }
@@ -136,13 +137,14 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>(), Sel
         override fun onClick(v: View?) {
             if(!selectionManager.isSelectable())
                 colorClickListener.onClick(colorModels[adapterPosition])
-            else
-                selectionManager.select(colorModels[adapterPosition])
+            else {
+                selectionManager.select(colorModels[adapterPosition], adapterPosition)
+            }
         }
 
         override fun onLongClick(v: View?): Boolean {
-            selectionManager.select(colorModels[adapterPosition])
-            return false
+            selectionManager.select(colorModels[adapterPosition], adapterPosition)
+            return true
         }
 
     }

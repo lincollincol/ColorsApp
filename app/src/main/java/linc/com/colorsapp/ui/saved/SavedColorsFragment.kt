@@ -11,6 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter
+import jp.wasabeef.recyclerview.animators.FadeInAnimator
 import linc.com.colorsapp.ColorsApp
 import linc.com.colorsapp.R
 import linc.com.colorsapp.data.api.ColorsApi
@@ -119,8 +121,12 @@ class SavedColorsFragment : Fragment(),
                 gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
             }
 
-        val rv = view.findViewById<RecyclerView>(R.id.colorsList).apply {
-            adapter = colorsAdapter
+        view.findViewById<RecyclerView>(R.id.colorsList).apply {
+            adapter = AlphaInAnimationAdapter(colorsAdapter).apply {
+                setHasFixedSize(true)
+                setFirstOnly(false)
+            }
+            itemAnimator = FadeInAnimator()
             setHasFixedSize(true)
             setLayoutManager(layoutManager)
         }
@@ -130,19 +136,17 @@ class SavedColorsFragment : Fragment(),
 
     override fun onClick(colorModel: ColorModel) {
         val data = Bundle().apply {
-            putParcelable(Constants.COLOR_ID, colorModel)
+            putParcelable(Constants.KEY_COLOR, colorModel)
         }
         (activity as NavigatorActivity)
             .navigateToDialog(ColorDetailsFragment.newInstance(data))
     }
 
     override fun onActionClick(item: MenuItem?) {
-        println(selectionManager.getLastSelected())
-        // Copy
-        presenter?.deleteColors(selectionManager.getLastSelected().toList())
+        presenter?.deleteColors(selectionManager.getSelected().toList())
     }
 
-    override fun showColors(colors: List<ColorModel>, cardHeights: List<Int>) {
+    override fun showColors(colors: MutableList<ColorModel>, cardHeights: List<Int>) {
         colorsAdapter.setColors(colors, cardHeights)
     }
 

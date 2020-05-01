@@ -2,17 +2,18 @@ package linc.com.colorsapp.ui.onwcolors
 
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
+import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.transition.Slide
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter
+import jp.wasabeef.recyclerview.animators.FadeInAnimator
 import linc.com.colorsapp.ColorsApp
 
 import linc.com.colorsapp.R
@@ -27,7 +28,7 @@ import linc.com.colorsapp.ui.adapters.SelectionManager
 import linc.com.colorsapp.ui.custom.SelectionActionMode
 import linc.com.colorsapp.ui.details.ColorDetailsFragment
 import linc.com.colorsapp.ui.newcolor.NewColorFragment
-import linc.com.colorsapp.utils.Constants.Companion.COLOR_ID
+import linc.com.colorsapp.utils.Constants.Companion.KEY_COLOR
 import linc.com.colorsapp.utils.WebPageParser
 
 class OwnColorsFragment : Fragment(),
@@ -60,6 +61,12 @@ class OwnColorsFragment : Fragment(),
                     )
                 )
             )
+        }
+
+        enterTransition = Slide(Gravity.BOTTOM).apply {
+            interpolator = LinearOutSlowInInterpolator()
+            duration = 500
+            addTarget(R.id.newColor)
         }
 
     }
@@ -127,8 +134,12 @@ class OwnColorsFragment : Fragment(),
 
         view.findViewById<FloatingActionButton>(R.id.newColor).setOnClickListener(this)
 
-        val rv = view.findViewById<RecyclerView>(R.id.colorsList).apply {
-            adapter = colorsAdapter
+        view.findViewById<RecyclerView>(R.id.colorsList).apply {
+            adapter = AlphaInAnimationAdapter(colorsAdapter).apply {
+                setHasFixedSize(true)
+                setFirstOnly(false)
+            }
+            itemAnimator = FadeInAnimator()
             setHasFixedSize(true)
             setLayoutManager(layoutManager)
         }
@@ -138,7 +149,7 @@ class OwnColorsFragment : Fragment(),
 
     override fun onClick(colorModel: ColorModel) {
         val data = Bundle().apply {
-            putParcelable(COLOR_ID, colorModel)
+            putParcelable(KEY_COLOR, colorModel)
         }
         (activity as NavigatorActivity)
             .navigateToDialog(ColorDetailsFragment.newInstance(data))
@@ -157,7 +168,7 @@ class OwnColorsFragment : Fragment(),
         presenter?.saveCustomColor(colorModel)
     }
 
-    override fun showColors(colors: List<ColorModel>, cardHeights: List<Int>) {
+    override fun showColors(colors: MutableList<ColorModel>, cardHeights: List<Int>) {
         colorsAdapter.setColors(colors, cardHeights)
     }
 
@@ -174,6 +185,6 @@ class OwnColorsFragment : Fragment(),
     }
 
     override fun onActionClick(item: MenuItem?) {
-        presenter?.deleteColors(selectionManager.getLastSelected().toList())
+        presenter?.deleteColors(selectionManager.getSelected().toList())
     }
 }

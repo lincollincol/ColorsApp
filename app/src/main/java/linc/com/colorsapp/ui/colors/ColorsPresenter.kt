@@ -24,7 +24,7 @@ class ColorsPresenter(private val colorsInteractor: ColorsInteractor) {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                view?.showColors(it, mutableListOf<Int>()
+                view?.showColors(it.toMutableList(), mutableListOf<Int>()
                     .apply {
                         for(i in 0..it.size) {
                             add(Random.nextInt(400, 700))

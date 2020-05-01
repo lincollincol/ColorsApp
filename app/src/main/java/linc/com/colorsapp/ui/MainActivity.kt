@@ -1,6 +1,7 @@
 package linc.com.colorsapp.ui
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.ActionMode
@@ -12,14 +13,17 @@ import linc.com.colorsapp.ui.colors.ColorsFragment
 import linc.com.colorsapp.ui.onwcolors.OwnColorsFragment
 import linc.com.colorsapp.ui.saved.SavedColorsFragment
 import linc.com.colorsapp.utils.Constants.Companion.COLORS_FRAGMENT
+import linc.com.colorsapp.utils.Constants.Companion.KEY_CURRENT_FRAGMENT
+import linc.com.colorsapp.utils.Constants.Companion.KEY_MENU_POSITION
 import linc.com.colorsapp.utils.Constants.Companion.OWN_FRAGMENT
 import linc.com.colorsapp.utils.Constants.Companion.SAVED_FRAGMENT
 import linc.com.colorsapp.utils.ScreenNavigator
+import linc.com.colorsapp.utils.getName
 import linc.com.colorsapp.utils.isNull
 import nl.joery.animatedbottombar.AnimatedBottomBar
 
 
-class MainActivity : AppCompatActivity(), NavigatorActivity {
+class MainActivity : AppCompatActivity(), AnimatedBottomBar.OnTabSelectListener, NavigatorActivity {
 
     private lateinit var navigator: ScreenNavigator
 
@@ -28,26 +32,38 @@ class MainActivity : AppCompatActivity(), NavigatorActivity {
         setContentView(R.layout.activity_main)
 
         navigator = ScreenNavigator(supportFragmentManager, R.id.fragmentContainer)
+        menu.setOnTabSelectListener(this)
 
-        navigateToMenuFragment(COLORS_FRAGMENT)
+        if(savedInstanceState != null) {
+            menu.selectTabAt(savedInstanceState.getInt(KEY_MENU_POSITION))
+            navigator.navigateToFragment(
+                supportFragmentManager.getFragment(savedInstanceState, KEY_CURRENT_FRAGMENT)!!
+            )
+            return
+        }
 
-        menu.setOnTabSelectListener(object : AnimatedBottomBar.OnTabSelectListener {
-            override fun onTabSelected(
-                lastIndex: Int,
-                lastTab: AnimatedBottomBar.Tab?,
-                newIndex: Int,
-                newTab: AnimatedBottomBar.Tab
-            ) {
-                Log.d("bottom_bar", "Selected index: $newIndex, title: ${newTab.title}")
-                navigateToMenuFragment(newIndex)
-            }
+        navigator.navigateToFragment(ColorsFragment.newInstance())
 
-            // An optional method that will be fired whenever an already selected tab has been selected again.
-            override fun onTabReselected(index: Int, tab: AnimatedBottomBar.Tab) {
-                Log.d("bottom_bar", "Reselected index: $index, title: ${tab.title}")
-            }
-        })
+    }
 
+    override fun onTabSelected(
+        lastIndex: Int,
+        lastTab: AnimatedBottomBar.Tab?,
+        newIndex: Int,
+        newTab: AnimatedBottomBar.Tab
+    ) {
+        when(newIndex) {
+            COLORS_FRAGMENT -> navigator.navigateToFragment(ColorsFragment.newInstance())
+            SAVED_FRAGMENT -> navigator.navigateToFragment(SavedColorsFragment.newInstance())
+            OWN_FRAGMENT -> navigator.navigateToFragment(OwnColorsFragment.newInstance())
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(KEY_MENU_POSITION, menu.selectedIndex)
+        supportFragmentManager.putFragment(outState, KEY_CURRENT_FRAGMENT, navigator.getCurrentFragment())
+        navigator.clearInstances()
     }
 
     override fun onBackPressed() {
@@ -55,17 +71,11 @@ class MainActivity : AppCompatActivity(), NavigatorActivity {
             menu.selectTabAt(tabIndex = COLORS_FRAGMENT, animate = true)
             return
         }
+        navigator.clearInstances()
         finish()
         super.onBackPressed()
     }
 
-    private fun navigateToMenuFragment(newTab: Int) {
-        when(newTab) {
-            COLORS_FRAGMENT -> navigator.navigateToFragment(ColorsFragment.newInstance())
-            SAVED_FRAGMENT -> navigator.navigateToFragment(SavedColorsFragment.newInstance())
-            OWN_FRAGMENT -> navigator.navigateToFragment(OwnColorsFragment.newInstance())
-        }
-    }
 
     override fun navigateToFragment(fragment: Fragment) {
         navigator.navigateToFragment(fragment, true)

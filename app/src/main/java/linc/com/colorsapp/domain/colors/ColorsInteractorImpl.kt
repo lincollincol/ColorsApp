@@ -16,7 +16,7 @@ class ColorsInteractorImpl(
 
     override fun saveColors(colors: List<ColorModel>): Completable {
         return colorsRepository.updateColors(colors.map {
-            it.saved = true
+            it.saved = !it.saved
             return@map it
         })
     }

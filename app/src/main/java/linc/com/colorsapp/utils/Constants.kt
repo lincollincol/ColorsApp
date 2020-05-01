@@ -27,8 +27,10 @@ class Constants {
         // RecyclerView
         const val SELECTION_ID = "colors_selection"
 
-        // Transactions bundle id
-        const val COLOR_ID = "colors_id"
+        // Transactions/Bundles ids
+        const val KEY_COLOR = "colors_key"
+        const val KEY_MENU_POSITION = "menu_key"
+        const val KEY_CURRENT_FRAGMENT = "current_key"
 
     }
 }

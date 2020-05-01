@@ -9,6 +9,8 @@ import androidx.appcompat.view.ActionMode
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter
+import jp.wasabeef.recyclerview.animators.FadeInAnimator
 import linc.com.colorsapp.ColorsApp
 import linc.com.colorsapp.R
 import linc.com.colorsapp.data.api.ColorsApi
@@ -21,7 +23,7 @@ import linc.com.colorsapp.ui.adapters.ColorsAdapter
 import linc.com.colorsapp.ui.adapters.SelectionManager
 import linc.com.colorsapp.ui.custom.SelectionActionMode
 import linc.com.colorsapp.ui.details.ColorDetailsFragment
-import linc.com.colorsapp.utils.Constants.Companion.COLOR_ID
+import linc.com.colorsapp.utils.Constants.Companion.KEY_COLOR
 import linc.com.colorsapp.utils.WebPageParser
 
 
@@ -39,7 +41,6 @@ class ColorsFragment : Fragment(), ColorsView, ColorsAdapter.ColorClickListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        retainInstance = true
 
         if(presenter == null) {
             presenter = ColorsPresenter(
@@ -74,6 +75,8 @@ class ColorsFragment : Fragment(), ColorsView, ColorsAdapter.ColorClickListener,
     ): View? {
         return inflater.inflate(R.layout.fragment_colors, container, false)
     }
+
+    lateinit var rv: RecyclerView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -120,56 +123,20 @@ class ColorsFragment : Fragment(), ColorsView, ColorsAdapter.ColorClickListener,
             gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
         }
 
-        // todo refactor
-        val rv = view.findViewById<RecyclerView>(R.id.colorsList).apply {
-            adapter = colorsAdapter
+        rv = view.findViewById<RecyclerView>(R.id.colorsList).apply {
+            adapter = AlphaInAnimationAdapter(colorsAdapter).apply {
+                setHasFixedSize(true)
+                setFirstOnly(false)
+            }
+            itemAnimator = FadeInAnimator()
             setHasFixedSize(true)
             setLayoutManager(layoutManager)
         }
 
-        /*tracker = SelectionTracker.Builder(
-            SELECTION_ID,
-            rv,
-            colorKeyProvider,
-            ColorLookup(rv),
-            StorageStrategy.createParcelableStorage(ColorModel::class.java)
-        ).withSelectionPredicate(SelectionPredicates.createSelectAnything())
-            .build()
-
-
-        tracker.addObserver(object : SelectionTracker.SelectionObserver<ColorModel>() {
-            override fun onSelectionChanged() {
-                super.onSelectionChanged()
-                actionMode = if(tracker.hasSelection()) {
-                    actionMode.isNull {
-                        (activity as AppCompatActivity).startSupportActionMode(
-                            SelectionActionMode(
-                                activity!!.applicationContext,
-                                tracker,
-                                this@ColorsFragment,
-                                SelectionActionMode.Type.SAVE)
-                        )
-                    }.apply {
-                        this?.title = view.context.getString(
-                            R.string.title_selected_items,
-                            tracker.selection.size()
-                        )
-                    }
-                }else {
-                    actionMode?.finish()
-                    null
-                }
-
-            }
-        })*/
-
-
-
-
         presenter?.getColors()
     }
 
-    override fun showColors(colors: List<ColorModel>, cardHeights: List<Int>) {
+    override fun showColors(colors: MutableList<ColorModel>, cardHeights: List<Int>) {
         colorsAdapter.setColors(colors, cardHeights)
     }
 
@@ -179,14 +146,14 @@ class ColorsFragment : Fragment(), ColorsView, ColorsAdapter.ColorClickListener,
 
     override fun onClick(colorModel: ColorModel) {
         val data = Bundle().apply {
-            putParcelable(COLOR_ID, colorModel)
+            putParcelable(KEY_COLOR, colorModel)
         }
         (activity as NavigatorActivity)
             .navigateToDialog(ColorDetailsFragment.newInstance(data))
     }
 
     override fun onActionClick(item: MenuItem?) {
-        presenter?.saveColors(selectionManager.getLastSelected().toList())
+        presenter?.saveColors(selectionManager.getSelected().toList())
     }
 
 }

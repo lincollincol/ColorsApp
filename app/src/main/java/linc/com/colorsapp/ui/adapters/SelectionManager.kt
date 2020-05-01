@@ -3,23 +3,25 @@ package linc.com.colorsapp.ui.adapters
 class SelectionManager<T> {
 
     private val items = mutableListOf<T>()
-    private lateinit var itemsLastSelected: MutableList<T>
+    private val itemsPositions = mutableListOf<Int>()
 
     private lateinit var selectionAdapter: SelectionAdapter<T>
     private lateinit var selectionListener: SelectionListener
 
-    fun select(item: T) {
+    fun select(item: T, position: Int) {
         if(items.contains(item)) {
-            deselect(item)
+            deselect(item, position)
             return
         }
         items.add(item)
+        itemsPositions.add(position)
         selectionListener.selectionChanged(items.count())
         selectionAdapter.selectionChanged(item)
     }
 
-    fun deselect(item: T) {
+    fun deselect(item: T, position: Int) {
         items.remove(item)
+        itemsPositions.add(position)
         if(items.isEmpty()) {
             selectionListener.selectionRemoved()
         }
@@ -28,10 +30,10 @@ class SelectionManager<T> {
     }
 
     fun cancelSelection() {
-        itemsLastSelected = items.toMutableList()
-        items.clear()
+        selectionAdapter.selectionRemoved(itemsPositions.min() ?: 0, itemsPositions.max() ?: 0)
         selectionListener.selectionRemoved()
-        selectionAdapter.selectionRemoved()
+        items.clear()
+        itemsPositions.clear()
     }
 
     fun isItemSelected(item: T) = items.contains(item)
@@ -46,11 +48,11 @@ class SelectionManager<T> {
         this.selectionListener = selectionListener
     }
 
-    fun getLastSelected() = items
+    fun getSelected() = items
 
     interface SelectionAdapter<T> {
         fun selectionChanged(item: T)
-        fun selectionRemoved()
+        fun selectionRemoved(rangeStart: Int, rangeEnd: Int)
     }
 
     interface SelectionListener {

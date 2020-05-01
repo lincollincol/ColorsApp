@@ -18,7 +18,6 @@ class SelectionActionMode<T>(
 ) : ActionMode.Callback {
 
     override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-        println("SOME_CLICKED")
         onActionClickListener.onActionClick(item)
         mode?.finish()
         return true
@@ -28,7 +27,7 @@ class SelectionActionMode<T>(
         mode?.menuInflater?.inflate(R.menu.menu_selection_action_mode, menu)
 
         @RawRes val menuIcon = when(type) {
-            Type.SAVE -> R.drawable.ic_save
+            Type.SAVE -> R.drawable.ic_save_white
             Type.DELETE -> R.drawable.ic_delete
         }
 
