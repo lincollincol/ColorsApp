@@ -8,7 +8,6 @@ import linc.com.colorsapp.domain.ColorModel
 interface OwnColorsInteractor {
 
     fun execute(): Single<List<ColorModel>>
-    fun saveCustomColor(color: ColorModel): Single<ColorModel>
     fun deleteColors(colors: List<ColorModel>): Completable
 
 }

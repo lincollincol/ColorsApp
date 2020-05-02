@@ -1,11 +1,9 @@
 package linc.com.colorsapp.data.repository
 
-import androidx.room.PrimaryKey
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.internal.operators.completable.CompletableCreate
 import linc.com.colorsapp.data.api.ColorsApi
-import linc.com.colorsapp.data.db.ColorsDao
+import linc.com.colorsapp.data.room.ColorsDao
 import linc.com.colorsapp.data.mappers.ColorModelMapper
 import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.domain.ColorsRepository
@@ -50,13 +48,21 @@ class ColorsRepositoryImpl(
         }
     }
 
-    override fun saveCustomColor(color: ColorModel): Single<ColorModel> {
-        return Single.create {
-            val colorRoomEntity = colorModelMapper.toColorRoomEntity(color)
-            colorsDao.insert(colorRoomEntity)
-            it.onSuccess(color.apply {
-                id = colorRoomEntity.id
+    override fun saveCustomColor(color: ColorModel): Completable {
+        return Completable.create {
+            colorsDao.insert(
+                colorModelMapper.toColorRoomEntity(color)
+            )
+            it.onComplete()
+        }
+    }
+
+    override fun deleteCustomColors(colors: List<ColorModel>): Completable {
+        return Completable.create {
+            colorsDao.deleteColors(colors.map {
+                    colorModel -> colorModelMapper.toColorRoomEntity(colorModel)
             })
+            it.onComplete()
         }
     }
 

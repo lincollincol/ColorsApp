@@ -3,32 +3,92 @@ package linc.com.colorsapp.ui.newcolor
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.transition.Fade
+import androidx.transition.Slide
+import androidx.transition.TransitionSet
+import androidx.transition.TransitionSet.ORDERING_SEQUENTIAL
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
-import kotlinx.android.synthetic.main.dialog_new_color.*
+import kotlinx.android.synthetic.main.fragment_new_color.*
+import linc.com.colorsapp.ColorsApp
 import linc.com.colorsapp.R
+import linc.com.colorsapp.data.api.ColorsApi
+import linc.com.colorsapp.data.mappers.ColorModelMapper
+import linc.com.colorsapp.data.repository.ColorsRepositoryImpl
 import linc.com.colorsapp.domain.ColorModel
+import linc.com.colorsapp.domain.newcolor.NewColorInteractorImpl
+import linc.com.colorsapp.ui.activities.BottomMenuActivity
+import linc.com.colorsapp.ui.activities.InputActivity
+import linc.com.colorsapp.ui.activities.NavigatorActivity
+import linc.com.colorsapp.ui.activities.ToolbarActivity
+import linc.com.colorsapp.ui.onwcolors.OwnColorsFragment
+import linc.com.colorsapp.utils.WebPageParser
 
 
-class NewColorFragment : DialogFragment() {
+class NewColorFragment : Fragment(), NewColorView {
 
-    private lateinit var onSaveListener: OnSaveListener
+    private var presenter: NewColorPresenter? = null
 
     companion object {
         fun newInstance() = NewColorFragment()
     }
 
-    interface OnSaveListener {
-        fun onSave(colorModel: ColorModel)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.FullScreenDialogStyle)
+        if(presenter == null) {
+            presenter = NewColorPresenter(
+                NewColorInteractorImpl(
+                    ColorsRepositoryImpl(
+                        ColorsApp.colorsDatabase.colorsDao(),
+                        ColorsApp.retrofit.create(ColorsApi::class.java),
+                        ColorModelMapper(),
+                        WebPageParser()
+                    )
+                )
+            )
+        }
+
+        val slideBottom = Slide(Gravity.BOTTOM).apply {
+            addTarget(R.id.newColorLayout)
+            addTarget(R.id.appBar)
+            duration = 300
+            interpolator = AccelerateDecelerateInterpolator()
+        }
+
+        enterTransition = TransitionSet().apply {
+            ordering = ORDERING_SEQUENTIAL
+            addTransition(slideBottom)
+            addTransition(Fade(Fade.IN).apply {
+                addTarget(R.id.colorTitle)
+                addTarget(R.id.colorPicker)
+                addTarget(R.id.colorHexCode)
+                addTarget(R.id.colorRgbCode)
+                duration = 200
+            })
+        }
+
+        exitTransition = slideBottom
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        presenter?.bind(this)
+        (activity as ToolbarActivity).hideToolbar()
+        (activity as BottomMenuActivity).hideMenu()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        presenter?.unbind()
+        (activity as ToolbarActivity).showToolbar()
+        (activity as BottomMenuActivity).showMenu()
+        (activity as InputActivity).hideKeyboard()
     }
 
     override fun onCreateView(
@@ -36,24 +96,30 @@ class NewColorFragment : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
-        val view: View = inflater.inflate(R.layout.dialog_new_color, container, false)
-        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
-        toolbar.setNavigationOnClickListener{ dismiss() }
-        toolbar.setOnMenuItemClickListener {
-            onSaveListener.onSave(ColorModel(
-                    name = colorTitle.text.toString(),
-                    hex = colorHexCode.text.toString(),
-                    rgb = colorRgbCode.text.toString()
-            ))
-            dismiss()
-            true
-        }
-        return view
+        return inflater.inflate(R.layout.fragment_new_color, container, false)
     }
+
+    // todo save color (onSaveInstanceState)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val toolbar: Toolbar = view.findViewById(R.id.toolbar)
+        toolbar.setNavigationOnClickListener {
+            presenter?.closeWitoutSaving()
+        }
+        toolbar.setOnMenuItemClickListener {
+            presenter?.saveCustomColor(
+                ColorModel(
+                    name = colorTitle.text.toString(),
+                    hex = colorHexCode.text.toString(),
+                    rgb = colorRgbCode.text.toString()
+                )
+            )
+
+            true
+        }
+
         colorPicker.setColorListener(ColorEnvelopeListener { envelope, _ ->
             colorHexCode.text = view.context.getString(
                 R.string.title_color_hex,
@@ -71,20 +137,17 @@ class NewColorFragment : DialogFragment() {
                     PorterDuff.Mode.SRC_IN
                 )
         })
+
+        colorTitle.setText("")
     }
 
-    override fun onStart() {
-        super.onStart()
-        val dialog = dialog
-        if (dialog != null) {
-            val width = ViewGroup.LayoutParams.MATCH_PARENT
-            val height = ViewGroup.LayoutParams.MATCH_PARENT
-            dialog.window?.setLayout(width, height)
-            dialog.window?.setWindowAnimations(R.style.FullScreenDialogAnimations)
-        }
+    override fun close() {
+        (activity as NavigatorActivity)
+            .popBackStack(OwnColorsFragment.newInstance())
     }
 
-    fun setOnSaveListener(onSaveListener: OnSaveListener) {
-        this.onSaveListener = onSaveListener
+    override fun showError(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
+
 }

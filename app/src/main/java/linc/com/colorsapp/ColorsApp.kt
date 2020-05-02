@@ -1,9 +1,7 @@
 package linc.com.colorsapp
 
 import android.app.Application
-import android.graphics.Color
-import androidx.room.RoomDatabase
-import linc.com.colorsapp.data.db.ColorsRoomDatabase
+import linc.com.colorsapp.data.room.ColorsRoomDatabase
 import linc.com.colorsapp.utils.Constants
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory

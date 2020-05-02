@@ -20,7 +20,7 @@ import linc.com.colorsapp.data.mappers.ColorModelMapper
 import linc.com.colorsapp.data.repository.ColorsRepositoryImpl
 import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.domain.saved.SavedColorsInteractorImpl
-import linc.com.colorsapp.ui.NavigatorActivity
+import linc.com.colorsapp.ui.activities.NavigatorActivity
 import linc.com.colorsapp.ui.adapters.ColorsAdapter
 import linc.com.colorsapp.ui.adapters.SelectionManager
 import linc.com.colorsapp.ui.custom.SelectionActionMode

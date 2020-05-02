@@ -1,6 +1,5 @@
 package linc.com.colorsapp.ui.onwcolors
 
-import android.graphics.Color
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import linc.com.colorsapp.domain.ColorModel
@@ -35,9 +34,9 @@ class OwnColorsPresenter (private val ownColorsInteractor: OwnColorsInteractor) 
             })
     }
 
-    fun saveCustomColor(color: ColorModel) {
+    /*fun saveCustomColor(color: ColorModel) {
         this.ownColorsInteractor
-            .saveCustomColor(color)
+            .editCustomColor(color)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
@@ -45,7 +44,7 @@ class OwnColorsPresenter (private val ownColorsInteractor: OwnColorsInteractor) 
             }, {
                 view?.showError(it.localizedMessage)
             })
-    }
+    }*/
 
     fun deleteColors(colors: List<ColorModel>) {
         this.ownColorsInteractor.deleteColors(colors)

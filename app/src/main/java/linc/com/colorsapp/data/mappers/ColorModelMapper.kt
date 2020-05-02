@@ -1,6 +1,6 @@
 package linc.com.colorsapp.data.mappers
 
-import linc.com.colorsapp.data.db.ColorRoomEntity
+import linc.com.colorsapp.data.room.ColorRoomEntity
 import linc.com.colorsapp.domain.ColorModel
 import java.util.*
 
@@ -22,8 +22,8 @@ class ColorModelMapper {
         name = colorModel.name ?: "White",
         hex = colorModel.hex ?: "#FFFFFF",
         rgb = colorModel.rgb ?: "rgb(255, 255, 255)",
-        saved = colorModel.saved!!,
-        custom = colorModel.custom!!
+        saved = colorModel.saved,
+        custom = colorModel.custom
     )
 
 }

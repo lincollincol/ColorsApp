@@ -1,4 +1,4 @@
-package linc.com.colorsapp.data.db
+package linc.com.colorsapp.data.room
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -9,6 +9,7 @@ interface ColorsRepository {
     fun getSavedColors(): Single<List<ColorModel>>
     fun getCustomColors(): Single<List<ColorModel>>
     fun updateColors(colors: List<ColorModel>): Completable
-    fun saveCustomColor(color: ColorModel): Single<ColorModel>
+    fun saveCustomColor(color: ColorModel): Completable
+    fun deleteCustomColors(colors: List<ColorModel>): Completable
 
 }

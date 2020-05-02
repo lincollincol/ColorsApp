@@ -1,6 +1,5 @@
-package linc.com.colorsapp.data.db
+package linc.com.colorsapp.data.room
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
@@ -24,10 +23,10 @@ interface ColorsDao {
     //
     // Insert
     //
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(color: ColorRoomEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertColors(colors: List<ColorRoomEntity>)
 
     //
@@ -35,7 +34,6 @@ interface ColorsDao {
     //
     @Update
     fun updateColors(colors: List<ColorRoomEntity>)
-
 
     //
     // Delete

@@ -1,9 +1,7 @@
-package linc.com.colorsapp.data.db
+package linc.com.colorsapp.data.room
 
 import android.content.Context
-import android.graphics.Color
 import androidx.room.*
-import androidx.sqlite.db.SupportSQLiteOpenHelper
 import linc.com.colorsapp.utils.Constants.Companion.DATABASE_NAME
 
 

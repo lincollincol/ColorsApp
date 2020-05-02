@@ -22,7 +22,7 @@ import linc.com.colorsapp.data.mappers.ColorModelMapper
 import linc.com.colorsapp.data.repository.ColorsRepositoryImpl
 import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.domain.owncolors.OwnColorsInteractorImpl
-import linc.com.colorsapp.ui.NavigatorActivity
+import linc.com.colorsapp.ui.activities.NavigatorActivity
 import linc.com.colorsapp.ui.adapters.ColorsAdapter
 import linc.com.colorsapp.ui.adapters.SelectionManager
 import linc.com.colorsapp.ui.custom.SelectionActionMode
@@ -35,7 +35,6 @@ class OwnColorsFragment : Fragment(),
     OwnColorsView,
     View.OnClickListener,
     ColorsAdapter.ColorClickListener,
-    NewColorFragment.OnSaveListener,
     SelectionActionMode.OnActionClickListener {
 
     private lateinit var colorsAdapter: ColorsAdapter
@@ -73,11 +72,14 @@ class OwnColorsFragment : Fragment(),
 
     override fun onResume() {
         super.onResume()
+        println("RESUME")
         presenter?.bind(this)
+        presenter?.getColors()
     }
 
     override fun onStop() {
         super.onStop()
+        println("STOP")
         presenter?.unbind()
         actionMode?.finish()
         actionMode = null
@@ -93,12 +95,12 @@ class OwnColorsFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        selectionManager = SelectionManager<ColorModel>()
+        selectionManager = SelectionManager()
         selectionManager.setSelectionListener(object : SelectionManager.SelectionListener {
             override fun selectionChanged(count: Int) {
                 if(actionMode == null) {
                     actionMode = (activity as AppCompatActivity)
-                        .startSupportActionMode(SelectionActionMode<ColorModel>(
+                        .startSupportActionMode(SelectionActionMode(
                             activity!!.applicationContext,
                             selectionManager,
                             this@OwnColorsFragment,
@@ -144,7 +146,6 @@ class OwnColorsFragment : Fragment(),
             setLayoutManager(layoutManager)
         }
 
-        presenter?.getColors()
     }
 
     override fun onClick(colorModel: ColorModel) {
@@ -157,15 +158,7 @@ class OwnColorsFragment : Fragment(),
 
     override fun onClick(v: View?) {
         (activity as NavigatorActivity)
-            .navigateToDialog(NewColorFragment.newInstance()
-                .apply {
-                    setOnSaveListener(this@OwnColorsFragment)
-                }
-            )
-    }
-
-    override fun onSave(colorModel: ColorModel) {
-        presenter?.saveCustomColor(colorModel)
+            .navigateToFragment(NewColorFragment.newInstance())
     }
 
     override fun showColors(colors: MutableList<ColorModel>, cardHeights: List<Int>) {
@@ -187,4 +180,5 @@ class OwnColorsFragment : Fragment(),
     override fun onActionClick(item: MenuItem?) {
         presenter?.deleteColors(selectionManager.getSelected().toList())
     }
+
 }

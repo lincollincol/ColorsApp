@@ -4,10 +4,6 @@ import android.os.Parcel
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.selection.SelectionTracker
 
-inline fun <T> T.isNull(func: ()-> T): T {
-    return this ?: func()
-}
-
 fun <E> MutableList<E>.updateAll(newList: List<E>) {
     this.clear()
     this.addAll(newList)

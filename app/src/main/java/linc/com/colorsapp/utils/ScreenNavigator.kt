@@ -32,13 +32,19 @@ class ScreenNavigator(
         fragment.show(fragmentManager, fragment::class.java.simpleName)
     }
 
-    fun popBackStack() {
+    fun popBackStack(alternativeFragment: Fragment?) {
+        if(alternativeFragment != null) {
+            startTransaction(alternativeFragment, false)
+            return
+        }
         fragmentManager.popBackStack()
     }
 
-    fun getCurrentFragment() = menuFragments[menuFragments.indexOfFirst {
-        it.getName() == currentFragmentName
-    }]
+    fun getCurrentFragment() = menuFragments[
+            menuFragments.indexOfFirst {
+                it.getName() == currentFragmentName
+            }
+    ]
 
     fun clearInstances() {
         menuFragments.clear()
