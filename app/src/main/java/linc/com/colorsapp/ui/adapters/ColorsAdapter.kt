@@ -101,7 +101,7 @@ class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>(), Sel
                 .getReadableColor(Color.parseColor(colorModel.hex))
 
             title.apply {
-                text = colorModel.name
+                text = colorModel.title
                 setTextColor(readableColor)
             }
 

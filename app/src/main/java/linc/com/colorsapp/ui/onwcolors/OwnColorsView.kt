@@ -4,6 +4,7 @@ import linc.com.colorsapp.domain.ColorModel
 
 interface OwnColorsView {
 
+    fun openEditor(color: ColorModel)
     fun showColors(colors: MutableList<ColorModel>, cardHeights: List<Int>)
     fun showNewColor(color: ColorModel, cardHeight: Int)
     fun deleteColor(color: ColorModel)

@@ -23,6 +23,8 @@ import linc.com.colorsapp.ui.adapters.ColorsAdapter
 import linc.com.colorsapp.ui.adapters.SelectionManager
 import linc.com.colorsapp.ui.custom.SelectionActionMode
 import linc.com.colorsapp.ui.details.ColorDetailsFragment
+import linc.com.colorsapp.utils.Constants
+import linc.com.colorsapp.utils.Constants.Companion.EMPTY_SELECTION
 import linc.com.colorsapp.utils.Constants.Companion.KEY_COLOR_MODEL
 import linc.com.colorsapp.utils.WebPageParser
 
@@ -99,7 +101,7 @@ class ColorsFragment : Fragment(), ColorsView, ColorsAdapter.ColorClickListener,
                     count
                 )
 
-                if(count == 0) {
+                if(count == EMPTY_SELECTION) {
                     actionMode?.finish()
                     actionMode= null
                 }

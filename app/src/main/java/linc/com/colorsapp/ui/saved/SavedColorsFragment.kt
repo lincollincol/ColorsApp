@@ -26,6 +26,7 @@ import linc.com.colorsapp.ui.adapters.SelectionManager
 import linc.com.colorsapp.ui.custom.SelectionActionMode
 import linc.com.colorsapp.ui.details.ColorDetailsFragment
 import linc.com.colorsapp.utils.Constants
+import linc.com.colorsapp.utils.Constants.Companion.EMPTY_SELECTION
 import linc.com.colorsapp.utils.WebPageParser
 
 class SavedColorsFragment : Fragment(),
@@ -100,7 +101,7 @@ class SavedColorsFragment : Fragment(),
                     count
                 )
 
-                if(count == 0) {
+                if(count == EMPTY_SELECTION) {
                     actionMode?.finish()
                     actionMode= null
                 }

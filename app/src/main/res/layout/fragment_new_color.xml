@@ -34,88 +34,65 @@
             android:layout_height="wrap_content"
             android:fillViewport="true">
 
-            <TextView
-                android:id="@+id/labelTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:text="@string/label_title"
-                android:textSize="20sp"
-                android:textColor="@android:color/black"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/labelHexCode"/>
-
-            <TextView
-                android:id="@+id/labelHexCode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:text="@string/label_hex"
-                android:textSize="20sp"
-                android:textColor="@android:color/black"
-                app:layout_constraintTop_toBottomOf="@id/labelTitle"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/labelRgb"/>
-
-            <TextView
-                android:id="@+id/labelRgb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:text="@string/label_rgb"
-                android:textSize="20sp"
-                android:textColor="@android:color/black"
-                app:layout_constraintTop_toBottomOf="@id/labelHexCode"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/colorPicker"/>
-
-            <EditText
-                android:id="@+id/colorTitle"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textField"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:inputType="text"
-                app:layout_constraintTop_toTopOf="@id/labelTitle"
-                app:layout_constraintBottom_toBottomOf="@id/labelTitle"
-                app:layout_constraintStart_toEndOf="@id/labelTitle"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                android:layout_marginTop="10dp"
+                app:endIconMode="clear_text"
+                app:counterEnabled="true"
+                app:counterMaxLength="15"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/colorHexCode">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/colorTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:textAlignment="center"
+                    android:inputType="text"
+                    android:maxLength="15"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/colorHexCode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:textSize="20sp"
                 android:textColor="@android:color/black"
                 tools:text="#FFFFFF"
-                app:layout_constraintTop_toTopOf="@id/labelHexCode"
-                app:layout_constraintBottom_toBottomOf="@id/labelHexCode"
-                app:layout_constraintStart_toEndOf="@id/labelHexCode"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@id/textField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/colorRgbCode"/>
 
             <TextView
                 android:id="@+id/colorRgbCode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:gravity="center"
                 android:textSize="20sp"
                 android:textColor="@android:color/black"
                 tools:text="rgb(255,255,255)"
-                app:layout_constraintTop_toTopOf="@id/labelRgb"
-                app:layout_constraintBottom_toBottomOf="@id/labelRgb"
-                app:layout_constraintStart_toEndOf="@id/labelRgb"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@id/colorHexCode"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/colorPicker"
+                />
 
             <top.defaults.colorpicker.ColorPickerView
                 android:id="@+id/colorPicker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/labelRgb"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/colorRgbCode"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
@@ -123,5 +100,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

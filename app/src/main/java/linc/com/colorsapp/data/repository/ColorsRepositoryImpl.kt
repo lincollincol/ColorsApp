@@ -8,6 +8,7 @@ import linc.com.colorsapp.data.mappers.ColorModelMapper
 import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.domain.ColorsRepository
 import linc.com.colorsapp.utils.WebPageParser
+import java.util.*
 
 class ColorsRepositoryImpl(
     private val colorsDao: ColorsDao,
@@ -22,6 +23,7 @@ class ColorsRepositoryImpl(
             val response = colorsApi.getColors().execute()
             val models = webPageParser.parseHtmlResponse(response.body())
             colorsDao.insertColors(models.map { model ->
+                model.id = UUID.randomUUID().toString()
                 colorModelMapper.toColorRoomEntity(model)
             })
             it.onSuccess(models)

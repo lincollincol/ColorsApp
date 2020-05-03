@@ -28,7 +28,9 @@ import linc.com.colorsapp.ui.adapters.SelectionManager
 import linc.com.colorsapp.ui.custom.SelectionActionMode
 import linc.com.colorsapp.ui.details.ColorDetailsFragment
 import linc.com.colorsapp.ui.newcolor.NewColorFragment
+import linc.com.colorsapp.utils.Constants.Companion.EMPTY_SELECTION
 import linc.com.colorsapp.utils.Constants.Companion.KEY_COLOR_MODEL
+import linc.com.colorsapp.utils.Constants.Companion.ONE_ITEM_SELECTED
 import linc.com.colorsapp.utils.WebPageParser
 
 class OwnColorsFragment : Fragment(),
@@ -111,7 +113,11 @@ class OwnColorsFragment : Fragment(),
                     count
                 )
 
-                if(count == 0) {
+                actionMode?.menu
+                    ?.findItem(R.id.edit)
+                    ?.isVisible = count == ONE_ITEM_SELECTED
+
+                if(count == EMPTY_SELECTION) {
                     actionMode?.finish()
                     actionMode= null
                 }
@@ -155,9 +161,26 @@ class OwnColorsFragment : Fragment(),
     }
 
     override fun onClick(v: View?) {
+        presenter?.createColor()
+    }
+
+    override fun onActionClick(item: MenuItem?) {
+        when(item?.itemId) {
+            R.id.action ->
+                presenter?.deleteColors(selectionManager.getSelected().toList())
+            R.id.edit -> {
+                presenter?.editItem(selectionManager.getFirstSelected())
+            }
+        }
+
+    }
+
+    override fun openEditor(color: ColorModel) {
         (activity as NavigatorActivity)
             .navigateToFragment(
-                NewColorFragment.newInstance(),
+                NewColorFragment.newInstance(Bundle().apply {
+                    putParcelable(KEY_COLOR_MODEL, color)
+                }),
                 withBackStack = true,
                 saveInstance = false
             )
@@ -177,10 +200,6 @@ class OwnColorsFragment : Fragment(),
 
     override fun showError(message: String) {
         Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onActionClick(item: MenuItem?) {
-        presenter?.deleteColors(selectionManager.getSelected().toList())
     }
 
 }

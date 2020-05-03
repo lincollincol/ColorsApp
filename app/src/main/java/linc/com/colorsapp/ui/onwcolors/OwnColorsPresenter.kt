@@ -34,17 +34,9 @@ class OwnColorsPresenter (private val ownColorsInteractor: OwnColorsInteractor) 
             })
     }
 
-    /*fun saveCustomColor(color: ColorModel) {
-        this.ownColorsInteractor
-            .editCustomColor(color)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                view?.showNewColor(it, Random.nextInt(400, 700))
-            }, {
-                view?.showError(it.localizedMessage)
-            })
-    }*/
+    fun createColor() {
+        view?.openEditor(ColorModel())
+    }
 
     fun deleteColors(colors: List<ColorModel>) {
         this.ownColorsInteractor.deleteColors(colors)
@@ -55,6 +47,10 @@ class OwnColorsPresenter (private val ownColorsInteractor: OwnColorsInteractor) 
                     view?.deleteColor(it)
                 }
             }
+    }
+
+    fun editItem(color: ColorModel) {
+        view?.openEditor(color)
     }
 
 }

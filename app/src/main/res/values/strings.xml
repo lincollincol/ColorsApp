@@ -10,14 +10,12 @@
     <!--New color screen-->
     <string name="title_toolbar_new_color">New color</string>
     <string name="hint_color_title">Color title</string>
-    <string name="title_color_hex">#%1$s</string>
-    <string name="title_color_rgb">rgb(%1$d, %2$d, %3$d)</string>
+    <string name="title_color_hex">Hex: #%1$s</string>
+    <string name="title_color_rgb">RGB: %1$d, %2$d, %3$d</string>
 
-    <string name="menu_selection_action_mode_action">Action</string>
     <string name="title_selected_items">Selected: %1$d</string>
-    <string name="label_title">Title:</string>
-    <string name="label_rgb">RGB:</string>
-    <string name="label_hex">Hex:</string>
+    <string name="menu_selection_action_mode_action">Action</string>
+    <string name="menu_selection_action_mode_edit">Edit</string>
 
 
 </resources>

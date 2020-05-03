@@ -13,7 +13,8 @@ class NewColorInteractorImpl(
     override fun saveCustomColor(color: ColorModel): Completable {
         return colorsRepository.saveCustomColor(
             color.apply {
-                id = UUID.randomUUID().toString()
+                if(id == null)
+                    id = UUID.randomUUID().toString()
                 custom = true
             }
         )

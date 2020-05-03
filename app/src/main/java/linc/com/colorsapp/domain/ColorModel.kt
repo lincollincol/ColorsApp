@@ -7,24 +7,24 @@ import linc.com.colorsapp.utils.writeBoolean
 
 data class ColorModel (
     var id: String? = null,
-    var name: String? = null,
-    var hex: String? = null,
-    var rgb: String? = null,
+    var title: String = DEFAULT.title,
+    var hex: String = DEFAULT.hex,
+    var rgb: String = DEFAULT.rgb,
     var saved: Boolean = false,
     var custom: Boolean = false
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
         parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString(),
+        parcel.readString() ?: DEFAULT.title,
+        parcel.readString() ?: DEFAULT.hex,
+        parcel.readString() ?: DEFAULT.rgb,
         parcel.readBoolean() ?: false,
         parcel.readBoolean() ?: false
     )
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.writeStringArray(arrayOf(id, name, hex, rgb))
+        dest?.writeStringArray(arrayOf(id, title, hex, rgb))
         dest?.writeBoolean(saved)
         dest?.writeBoolean(custom)
     }
@@ -40,4 +40,11 @@ data class ColorModel (
             return arrayOfNulls(size)
         }
     }
+
+    private object DEFAULT {
+        const val title = "White"
+        const val hex = "#FFFFFF"
+        const val rgb = "rgb(255, 255, 255)"
+    }
+
 }

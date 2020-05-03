@@ -3,12 +3,12 @@ package linc.com.colorsapp.ui.custom
 import android.content.Context
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.annotation.RawRes
 import androidx.appcompat.view.ActionMode
 import androidx.core.content.ContextCompat
 import linc.com.colorsapp.R
 import linc.com.colorsapp.ui.adapters.SelectionManager
-import linc.com.colorsapp.utils.Constants.Companion.FIRST_ITEM
 
 class SelectionActionMode<T>(
     private val context: Context,
@@ -31,7 +31,9 @@ class SelectionActionMode<T>(
             Type.DELETE -> R.drawable.ic_delete
         }
 
-        menu?.getItem(FIRST_ITEM)?.icon = ContextCompat.getDrawable(context, menuIcon)
+        menu?.findItem(R.id.action)?.icon =
+            ContextCompat.getDrawable(context, menuIcon)
+
         return true
     }
 

@@ -24,9 +24,9 @@ class Constants {
         const val MAIN_FRAGMENT = "ColorsFragment"
         const val PICKER_FRAGMENT = "NewColorFragment"
 
-
         // Selection action menu
-        const val FIRST_ITEM = 0
+        const val ONE_ITEM_SELECTED = 1
+        const val EMPTY_SELECTION = 0
 
         // Transactions/Bundles ids
         const val KEY_COLOR_MODEL = "color_model_key"
@@ -36,6 +36,6 @@ class Constants {
 
         // String formats
         const val FORMAT_HEX = "#%06X"
-
+        const val FORMAT_RGB = "rgb(%d, %d, %d)"
     }
 }

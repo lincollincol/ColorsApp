@@ -1,7 +1,6 @@
 package linc.com.colorsapp.ui.newcolor
 
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -28,19 +27,22 @@ import linc.com.colorsapp.ui.activities.BottomMenuActivity
 import linc.com.colorsapp.ui.activities.InputActivity
 import linc.com.colorsapp.ui.activities.NavigatorActivity
 import linc.com.colorsapp.ui.activities.ToolbarActivity
+import linc.com.colorsapp.utils.ColorUtil
 import linc.com.colorsapp.utils.Constants.Companion.FORMAT_HEX
 import linc.com.colorsapp.utils.Constants.Companion.KEY_COLOR
+import linc.com.colorsapp.utils.Constants.Companion.KEY_COLOR_MODEL
 import linc.com.colorsapp.utils.WebPageParser
-import top.defaults.colorpicker.ColorObserver
 
 
 class NewColorFragment : Fragment(), NewColorView {
 
+    private var editedColor: ColorModel? = null
     private var presenter: NewColorPresenter? = null
-    @ColorInt private var colorInt: Int = Color.WHITE
 
     companion object {
-        fun newInstance() = NewColorFragment()
+        fun newInstance(bundle: Bundle) = NewColorFragment().apply {
+            arguments = bundle
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,14 +75,14 @@ class NewColorFragment : Fragment(), NewColorView {
                 addTarget(R.id.colorPicker)
                 addTarget(R.id.colorHexCode)
                 addTarget(R.id.colorRgbCode)
-                duration = 200
+                duration = 500
             })
         }
 
         exitTransition = slideBottom
 
         if(savedInstanceState != null) {
-            colorInt = savedInstanceState.getInt(KEY_COLOR)
+            editedColor = savedInstanceState.getParcelable(KEY_COLOR_MODEL)
         }
 
     }
@@ -117,37 +119,39 @@ class NewColorFragment : Fragment(), NewColorView {
         }
         toolbar.setOnMenuItemClickListener {
             presenter?.saveCustomColor(
-                ColorModel(
-                    name = colorTitle.text.toString(),
-                    hex = colorHexCode.text.toString(),
-                    rgb = colorRgbCode.text.toString()
-                )
+                editedColor!!.apply {
+                    title = colorTitle.text.toString()
+                }
             )
-
-            println(colorTitle.text.toString())
-            println(colorHexCode.text.toString())
-            println(colorRgbCode.text.toString())
-
             true
         }
 
         colorPicker.subscribe { color, _, _ ->
-            colorHexCode.text = String.format(FORMAT_HEX, 0xFFFFFF and color)
+            colorHexCode.text = view.context.getString(
+                R.string.title_color_hex,
+                ColorUtil.getHexFromInt(colorPicker.color)
+            )
             colorRgbCode.text = view.context.getString(
                 R.string.title_color_rgb,
                 Color.red(color),
                 Color.green(color),
                 Color.blue(color)
             )
+            editedColor?.apply {
+                hex = ColorUtil.getHexFromInt(colorPicker.color)
+                rgb = ColorUtil.getRgbFromInt(colorPicker.color)
+            }
+
             scrollView.requestDisallowInterceptTouchEvent(true)
         }
 
-        colorPicker.setInitialColor(colorInt)
+        initColor(arguments?.getParcelable(KEY_COLOR_MODEL))
+        arguments?.clear()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(KEY_COLOR, colorPicker.color)
+        outState.putParcelable(KEY_COLOR_MODEL, editedColor)
     }
 
     override fun close() {
@@ -157,6 +161,18 @@ class NewColorFragment : Fragment(), NewColorView {
 
     override fun showError(message: String) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun initColor(color: ColorModel?) {
+        if(color == null) {
+            colorPicker.setInitialColor(Color.parseColor(editedColor?.hex))
+            return
+        }
+        colorTitle.setText(color.title)
+        colorHexCode.text = color.hex
+        colorRgbCode.text = color.rgb
+        colorPicker.setInitialColor(Color.parseColor(color.hex))
+        editedColor = color.copy()
     }
 
 }

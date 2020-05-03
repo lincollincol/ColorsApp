@@ -1,6 +1,5 @@
 package linc.com.colorsapp.utils
 
-import android.util.Log
 import linc.com.colorsapp.domain.ColorModel
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -28,7 +27,7 @@ class WebPageParser {
             when (counter) {
                 0 -> {
                     color = ColorModel()
-                    color.name = tagsMatcher.group().toUpperCase()
+                    color.title = tagsMatcher.group().toUpperCase()
                 }
                 1 -> color.hex = tagsMatcher.group()
                 2 -> {

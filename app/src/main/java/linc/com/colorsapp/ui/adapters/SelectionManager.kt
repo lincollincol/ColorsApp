@@ -21,7 +21,7 @@ class SelectionManager<T> {
 
     fun deselect(item: T, position: Int) {
         items.remove(item)
-        itemsPositions.add(position)
+        itemsPositions.remove(position)
         if(items.isEmpty()) {
             selectionListener.selectionRemoved()
         }
@@ -40,6 +40,12 @@ class SelectionManager<T> {
 
     fun isSelectable() = items.isNotEmpty()
 
+    fun getSelected() = items
+
+    fun selectedCount() = items.count()
+
+    fun getFirstSelected() = items.first()
+
     fun attachAdapter(selectionAdapter: SelectionAdapter<T>) {
         this.selectionAdapter = selectionAdapter
     }
@@ -47,8 +53,6 @@ class SelectionManager<T> {
     fun setSelectionListener(selectionListener: SelectionListener) {
         this.selectionListener = selectionListener
     }
-
-    fun getSelected() = items
 
     interface SelectionAdapter<T> {
         fun selectionChanged(item: T)

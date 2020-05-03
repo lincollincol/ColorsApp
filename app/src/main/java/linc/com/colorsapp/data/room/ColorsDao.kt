@@ -26,7 +26,7 @@ interface ColorsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(color: ColorRoomEntity)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertColors(colors: List<ColorRoomEntity>)
 
     //

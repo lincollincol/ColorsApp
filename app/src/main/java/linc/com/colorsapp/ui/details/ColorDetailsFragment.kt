@@ -42,7 +42,7 @@ class ColorDetailsFragment : DialogFragment() {
         }
 
         view.findViewById<TextView>(R.id.colorTitle)?.apply {
-            text = color.name
+            text = color.title
             setTextColor(ColorUtil.getReadableColor(Color.parseColor(color.hex)))
         }
         view.findViewById<TextView>(R.id.colorHexCode)?.text = color.hex
