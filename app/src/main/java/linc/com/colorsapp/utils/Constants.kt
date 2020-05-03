@@ -16,21 +16,26 @@ class Constants {
         // Ui
         //
 
-        // Navigation menu
+        // Navigation
         const val COLORS_FRAGMENT = 0
         const val SAVED_FRAGMENT = 1
         const val OWN_FRAGMENT = 2
 
+        const val MAIN_FRAGMENT = "ColorsFragment"
+        const val PICKER_FRAGMENT = "NewColorFragment"
+
+
         // Selection action menu
         const val FIRST_ITEM = 0
 
-        // RecyclerView
-        const val SELECTION_ID = "colors_selection"
-
         // Transactions/Bundles ids
-        const val KEY_COLOR = "colors_key"
+        const val KEY_COLOR_MODEL = "color_model_key"
         const val KEY_MENU_POSITION = "menu_key"
         const val KEY_CURRENT_FRAGMENT = "current_key"
+        const val KEY_COLOR = "color_key"
+
+        // String formats
+        const val FORMAT_HEX = "#%06X"
 
     }
 }

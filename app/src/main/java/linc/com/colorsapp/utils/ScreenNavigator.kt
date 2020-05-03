@@ -4,6 +4,9 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import kotlinx.android.synthetic.main.activity_main.view.*
+import linc.com.colorsapp.R
+import linc.com.colorsapp.utils.Constants.Companion.PICKER_FRAGMENT
 
 class ScreenNavigator(
     private val fragmentManager: FragmentManager,
@@ -11,9 +14,8 @@ class ScreenNavigator(
 ) {
 
     private val menuFragments = mutableListOf<Fragment>()
-    private lateinit var currentFragmentName: String
 
-    fun navigateToFragment(fragment: Fragment, withBackStack: Boolean = false) {
+    fun navigateToFragment(fragment: Fragment, withBackStack: Boolean = false, saveInstance: Boolean = false) {
         if(menuFragments.any { it.getName() == fragment.getName() }) {
             startTransaction(
                 menuFragments[menuFragments.indexOfFirst {
@@ -22,32 +24,34 @@ class ScreenNavigator(
                 withBackStack
             )
         } else {
-            menuFragments.add(fragment)
+            if(saveInstance) {
+                menuFragments.add(fragment)
+            }
             startTransaction(fragment, withBackStack)
         }
-        currentFragmentName = fragment.getName() ?: "DEF"
     }
 
     fun navigateToDialog(fragment: DialogFragment) {
         fragment.show(fragmentManager, fragment::class.java.simpleName)
     }
 
-    fun popBackStack(alternativeFragment: Fragment?) {
-        if(alternativeFragment != null) {
-            startTransaction(alternativeFragment, false)
-            return
-        }
+    fun popBackStack(): Boolean {
         fragmentManager.popBackStack()
+        return when(getCurrentFragment()?.getName()) {
+            PICKER_FRAGMENT -> true
+            else -> false
+        }
     }
 
-    fun getCurrentFragment() = menuFragments[
-            menuFragments.indexOfFirst {
-                it.getName() == currentFragmentName
-            }
-    ]
+    fun getCurrentFragment() = fragmentManager
+        .findFragmentById(R.id.fragmentContainer)
 
     fun clearInstances() {
         menuFragments.clear()
+    }
+
+    fun isCurrent(fragmentName: String): Boolean {
+        return getCurrentFragment()?.getName() == fragmentName
     }
 
     private fun startTransaction(fragment: Fragment, withBackStack: Boolean) {

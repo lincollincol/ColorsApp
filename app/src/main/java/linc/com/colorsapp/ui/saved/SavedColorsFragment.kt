@@ -136,7 +136,7 @@ class SavedColorsFragment : Fragment(),
 
     override fun onClick(colorModel: ColorModel) {
         val data = Bundle().apply {
-            putParcelable(Constants.KEY_COLOR, colorModel)
+            putParcelable(Constants.KEY_COLOR_MODEL, colorModel)
         }
         (activity as NavigatorActivity)
             .navigateToDialog(ColorDetailsFragment.newInstance(data))

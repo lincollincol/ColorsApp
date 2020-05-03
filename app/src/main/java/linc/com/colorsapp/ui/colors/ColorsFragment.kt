@@ -23,7 +23,7 @@ import linc.com.colorsapp.ui.adapters.ColorsAdapter
 import linc.com.colorsapp.ui.adapters.SelectionManager
 import linc.com.colorsapp.ui.custom.SelectionActionMode
 import linc.com.colorsapp.ui.details.ColorDetailsFragment
-import linc.com.colorsapp.utils.Constants.Companion.KEY_COLOR
+import linc.com.colorsapp.utils.Constants.Companion.KEY_COLOR_MODEL
 import linc.com.colorsapp.utils.WebPageParser
 
 
@@ -146,7 +146,7 @@ class ColorsFragment : Fragment(), ColorsView, ColorsAdapter.ColorClickListener,
 
     override fun onClick(colorModel: ColorModel) {
         val data = Bundle().apply {
-            putParcelable(KEY_COLOR, colorModel)
+            putParcelable(KEY_COLOR_MODEL, colorModel)
         }
         (activity as NavigatorActivity)
             .navigateToDialog(ColorDetailsFragment.newInstance(data))

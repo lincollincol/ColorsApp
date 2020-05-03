@@ -12,7 +12,7 @@ import androidx.fragment.app.DialogFragment
 import linc.com.colorsapp.R
 import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.utils.ColorUtil
-import linc.com.colorsapp.utils.Constants.Companion.KEY_COLOR
+import linc.com.colorsapp.utils.Constants.Companion.KEY_COLOR_MODEL
 
 class ColorDetailsFragment : DialogFragment() {
 
@@ -35,7 +35,7 @@ class ColorDetailsFragment : DialogFragment() {
     ): View? {
         val view = inflater.inflate(R.layout.dialog_color_details, container, false)
 
-        val color = arguments?.get(KEY_COLOR) as ColorModel
+        val color = arguments?.get(KEY_COLOR_MODEL) as ColorModel
 
         view.findViewById<CardView>(R.id.card).apply {
             setCardBackgroundColor(Color.parseColor(color.hex))

@@ -3,16 +3,19 @@ package linc.com.colorsapp.ui.newcolor
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.Toast
+import androidx.annotation.ColorInt
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.transition.Fade
 import androidx.transition.Slide
 import androidx.transition.TransitionSet
 import androidx.transition.TransitionSet.ORDERING_SEQUENTIAL
-import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import kotlinx.android.synthetic.main.fragment_new_color.*
 import linc.com.colorsapp.ColorsApp
 import linc.com.colorsapp.R
@@ -25,13 +28,16 @@ import linc.com.colorsapp.ui.activities.BottomMenuActivity
 import linc.com.colorsapp.ui.activities.InputActivity
 import linc.com.colorsapp.ui.activities.NavigatorActivity
 import linc.com.colorsapp.ui.activities.ToolbarActivity
-import linc.com.colorsapp.ui.onwcolors.OwnColorsFragment
+import linc.com.colorsapp.utils.Constants.Companion.FORMAT_HEX
+import linc.com.colorsapp.utils.Constants.Companion.KEY_COLOR
 import linc.com.colorsapp.utils.WebPageParser
+import top.defaults.colorpicker.ColorObserver
 
 
 class NewColorFragment : Fragment(), NewColorView {
 
     private var presenter: NewColorPresenter? = null
+    @ColorInt private var colorInt: Int = Color.WHITE
 
     companion object {
         fun newInstance() = NewColorFragment()
@@ -73,6 +79,9 @@ class NewColorFragment : Fragment(), NewColorView {
 
         exitTransition = slideBottom
 
+        if(savedInstanceState != null) {
+            colorInt = savedInstanceState.getInt(KEY_COLOR)
+        }
 
     }
 
@@ -99,8 +108,6 @@ class NewColorFragment : Fragment(), NewColorView {
         return inflater.inflate(R.layout.fragment_new_color, container, false)
     }
 
-    // todo save color (onSaveInstanceState)
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -117,33 +124,35 @@ class NewColorFragment : Fragment(), NewColorView {
                 )
             )
 
+            println(colorTitle.text.toString())
+            println(colorHexCode.text.toString())
+            println(colorRgbCode.text.toString())
+
             true
         }
 
-        colorPicker.setColorListener(ColorEnvelopeListener { envelope, _ ->
-            colorHexCode.text = view.context.getString(
-                R.string.title_color_hex,
-                envelope.hexCode
-            )
+        colorPicker.subscribe { color, _, _ ->
+            colorHexCode.text = String.format(FORMAT_HEX, 0xFFFFFF and color)
             colorRgbCode.text = view.context.getString(
                 R.string.title_color_rgb,
-                envelope.argb[1],
-                envelope.argb[2],
-                envelope.argb[3]
+                Color.red(color),
+                Color.green(color),
+                Color.blue(color)
             )
-            colorTemplate.background
-                .setColorFilter(
-                    Color.parseColor("#${envelope.hexCode}"),
-                    PorterDuff.Mode.SRC_IN
-                )
-        })
+            scrollView.requestDisallowInterceptTouchEvent(true)
+        }
 
-        colorTitle.setText("")
+        colorPicker.setInitialColor(colorInt)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(KEY_COLOR, colorPicker.color)
     }
 
     override fun close() {
         (activity as NavigatorActivity)
-            .popBackStack(OwnColorsFragment.newInstance())
+            .popBackStack()
     }
 
     override fun showError(message: String) {

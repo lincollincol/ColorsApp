@@ -6,8 +6,8 @@ import androidx.fragment.app.Fragment
 
 interface NavigatorActivity {
 
-    fun navigateToFragment(fragment: Fragment)
+    fun navigateToFragment(fragment: Fragment, withBackStack: Boolean = false, saveInstance: Boolean = false)
     fun navigateToDialog(fragment: DialogFragment)
-    fun popBackStack(alternativeFragment: Fragment? = null)
+    fun popBackStack()
 
 }

@@ -28,7 +28,7 @@ import linc.com.colorsapp.ui.adapters.SelectionManager
 import linc.com.colorsapp.ui.custom.SelectionActionMode
 import linc.com.colorsapp.ui.details.ColorDetailsFragment
 import linc.com.colorsapp.ui.newcolor.NewColorFragment
-import linc.com.colorsapp.utils.Constants.Companion.KEY_COLOR
+import linc.com.colorsapp.utils.Constants.Companion.KEY_COLOR_MODEL
 import linc.com.colorsapp.utils.WebPageParser
 
 class OwnColorsFragment : Fragment(),
@@ -72,14 +72,12 @@ class OwnColorsFragment : Fragment(),
 
     override fun onResume() {
         super.onResume()
-        println("RESUME")
         presenter?.bind(this)
         presenter?.getColors()
     }
 
     override fun onStop() {
         super.onStop()
-        println("STOP")
         presenter?.unbind()
         actionMode?.finish()
         actionMode = null
@@ -150,7 +148,7 @@ class OwnColorsFragment : Fragment(),
 
     override fun onClick(colorModel: ColorModel) {
         val data = Bundle().apply {
-            putParcelable(KEY_COLOR, colorModel)
+            putParcelable(KEY_COLOR_MODEL, colorModel)
         }
         (activity as NavigatorActivity)
             .navigateToDialog(ColorDetailsFragment.newInstance(data))
@@ -158,7 +156,11 @@ class OwnColorsFragment : Fragment(),
 
     override fun onClick(v: View?) {
         (activity as NavigatorActivity)
-            .navigateToFragment(NewColorFragment.newInstance())
+            .navigateToFragment(
+                NewColorFragment.newInstance(),
+                withBackStack = true,
+                saveInstance = false
+            )
     }
 
     override fun showColors(colors: MutableList<ColorModel>, cardHeights: List<Int>) {

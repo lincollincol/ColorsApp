@@ -19,6 +19,7 @@ import linc.com.colorsapp.ui.saved.SavedColorsFragment
 import linc.com.colorsapp.utils.Constants.Companion.COLORS_FRAGMENT
 import linc.com.colorsapp.utils.Constants.Companion.KEY_CURRENT_FRAGMENT
 import linc.com.colorsapp.utils.Constants.Companion.KEY_MENU_POSITION
+import linc.com.colorsapp.utils.Constants.Companion.MAIN_FRAGMENT
 import linc.com.colorsapp.utils.Constants.Companion.OWN_FRAGMENT
 import linc.com.colorsapp.utils.Constants.Companion.SAVED_FRAGMENT
 import linc.com.colorsapp.utils.ScreenNavigator
@@ -61,40 +62,42 @@ class MainActivity :
         newTab: AnimatedBottomBar.Tab
     ) {
         when(newIndex) {
-            COLORS_FRAGMENT -> navigator.navigateToFragment(ColorsFragment.newInstance())
-            SAVED_FRAGMENT -> navigator.navigateToFragment(SavedColorsFragment.newInstance())
-            OWN_FRAGMENT -> navigator.navigateToFragment(OwnColorsFragment.newInstance())
+            COLORS_FRAGMENT -> navigator.navigateToFragment(ColorsFragment.newInstance(), saveInstance = true)
+            SAVED_FRAGMENT -> navigator.navigateToFragment(SavedColorsFragment.newInstance(), saveInstance = true)
+            OWN_FRAGMENT -> navigator.navigateToFragment(OwnColorsFragment.newInstance(), saveInstance = true)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(KEY_MENU_POSITION, menu.selectedIndex)
-        supportFragmentManager.putFragment(outState, KEY_CURRENT_FRAGMENT, navigator.getCurrentFragment())
+        supportFragmentManager.putFragment(outState, KEY_CURRENT_FRAGMENT, navigator.getCurrentFragment()!!)
         navigator.clearInstances()
     }
 
     override fun onBackPressed() {
-        if(menu.selectedIndex != COLORS_FRAGMENT) {
-            menu.selectTabAt(tabIndex = COLORS_FRAGMENT, animate = true)
-            return
+        if(navigator.isCurrent(MAIN_FRAGMENT)) {
+            navigator.clearInstances()
+            finish()
+            super.onBackPressed()
+        }else {
+            if(!navigator.popBackStack())
+                menu.selectTabAt(tabIndex = COLORS_FRAGMENT, animate = true)
         }
-        navigator.clearInstances()
-        finish()
-        super.onBackPressed()
+
     }
 
 
-    override fun navigateToFragment(fragment: Fragment) {
-        navigator.navigateToFragment(fragment, true)
+    override fun navigateToFragment(fragment: Fragment, withBackStack: Boolean, saveInstance: Boolean) {
+        navigator.navigateToFragment(fragment, withBackStack, saveInstance)
     }
 
     override fun navigateToDialog(fragment: DialogFragment) {
         navigator.navigateToDialog(fragment)
     }
 
-    override fun popBackStack(alternativeFragment: Fragment?) {
-        navigator.popBackStack(alternativeFragment)
+    override fun popBackStack() {
+        navigator.popBackStack()
     }
 
     override fun showMenu() {

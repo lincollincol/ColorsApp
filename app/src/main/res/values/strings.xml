@@ -15,6 +15,9 @@
 
     <string name="menu_selection_action_mode_action">Action</string>
     <string name="title_selected_items">Selected: %1$d</string>
+    <string name="label_title">Title:</string>
+    <string name="label_rgb">RGB:</string>
+    <string name="label_hex">Hex:</string>
 
 
 </resources>
