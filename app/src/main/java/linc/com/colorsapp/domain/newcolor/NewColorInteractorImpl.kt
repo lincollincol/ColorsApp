@@ -5,8 +5,9 @@ import io.reactivex.rxjava3.core.Single
 import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.domain.ColorsRepository
 import java.util.*
+import javax.inject.Inject
 
-class NewColorInteractorImpl(
+class NewColorInteractorImpl @Inject constructor (
     private val colorsRepository: ColorsRepository
 ) : NewColorInteractor {
 

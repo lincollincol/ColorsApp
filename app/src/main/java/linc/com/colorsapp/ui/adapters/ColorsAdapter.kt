@@ -14,9 +14,11 @@ import linc.com.colorsapp.R
 import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.utils.ColorUtil
 import linc.com.colorsapp.utils.updateAll
+import javax.inject.Inject
 
 
-class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>(), SelectionManager.SelectionAdapter<ColorModel> {
+class ColorsAdapter : RecyclerView.Adapter<ColorsAdapter.ColorViewHolder>(),
+    SelectionManager.SelectionAdapter<ColorModel> {
 
     private val colorModels = mutableListOf<ColorModel>()
     private val cardHeights = mutableListOf<Int>()

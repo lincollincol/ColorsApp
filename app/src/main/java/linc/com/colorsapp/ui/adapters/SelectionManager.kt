@@ -1,5 +1,7 @@
 package linc.com.colorsapp.ui.adapters
 
+import javax.inject.Inject
+
 class SelectionManager<T> {
 
     private val items = mutableListOf<T>()

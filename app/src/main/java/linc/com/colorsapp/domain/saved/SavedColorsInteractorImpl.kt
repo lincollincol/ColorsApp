@@ -4,8 +4,9 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.domain.ColorsRepository
+import javax.inject.Inject
 
-class SavedColorsInteractorImpl(
+class SavedColorsInteractorImpl @Inject constructor(
     private val colorsRepository: ColorsRepository
 ) : SavedColorsInteractor {
 

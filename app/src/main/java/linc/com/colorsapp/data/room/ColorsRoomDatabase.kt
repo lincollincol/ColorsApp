@@ -10,7 +10,7 @@ abstract class ColorsRoomDatabase : RoomDatabase() {
 
     abstract fun colorsDao(): ColorsDao
 
-    companion object {
+    /*companion object {
         @Volatile
         private var INSTANCE: ColorsRoomDatabase? = null
 
@@ -29,7 +29,7 @@ abstract class ColorsRoomDatabase : RoomDatabase() {
                 return instance
             }
         }
-    }
+    }*/
 
 
 }

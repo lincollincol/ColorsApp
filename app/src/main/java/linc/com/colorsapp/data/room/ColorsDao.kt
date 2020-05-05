@@ -5,9 +5,6 @@ import androidx.room.*
 @Dao
 interface ColorsDao {
 
-    //
-    // Get
-    //
     @Query("SELECT * FROM colors WHERE custom = 0")
     fun getAll(): List<ColorRoomEntity>
 
@@ -20,24 +17,18 @@ interface ColorsDao {
     @Query("SELECT COUNT(*) FROM colors")
     fun getCount(): Int
 
-    //
-    // Insert
-    //
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(color: ColorRoomEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertColors(colors: List<ColorRoomEntity>)
 
-    //
-    // Update
-    //
+
     @Update
     fun updateColors(colors: List<ColorRoomEntity>)
 
-    //
-    // Delete
-    //
+
     @Delete
     fun deleteColors(colors: List<ColorRoomEntity>)
 

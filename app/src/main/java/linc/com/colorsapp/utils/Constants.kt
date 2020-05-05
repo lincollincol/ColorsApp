@@ -2,19 +2,11 @@ package linc.com.colorsapp.utils
 
 class Constants {
     companion object {
-        //
         // Storage
-        //
         const val DATABASE_NAME = "colors_database"
 
-        //
         // Network
-        //
         const val BASE_URL = "https://colours.neilorangepeel.com"
-
-        //
-        // Ui
-        //
 
         // Navigation
         const val COLORS_FRAGMENT = 0

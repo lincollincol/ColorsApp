@@ -8,4 +8,5 @@ interface ColorsInteractor {
 
     fun execute(): Single<List<ColorModel>>
     fun saveColors(colors: List<ColorModel>): Completable
+
 }

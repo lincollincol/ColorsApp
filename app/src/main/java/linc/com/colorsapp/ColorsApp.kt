@@ -1,26 +1,23 @@
 package linc.com.colorsapp
 
 import android.app.Application
-import linc.com.colorsapp.data.room.ColorsRoomDatabase
-import linc.com.colorsapp.utils.Constants
-import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
+import linc.com.colorsapp.di.components.AppComponent
+import linc.com.colorsapp.di.components.DaggerAppComponent
 
 class ColorsApp : Application() {
 
     companion object {
-        lateinit var instance: ColorsApp
-        lateinit var colorsDatabase: ColorsRoomDatabase
-        lateinit var retrofit: Retrofit
+        lateinit var appComponent: AppComponent
     }
 
     override fun onCreate() {
         super.onCreate()
-        instance = this
-        colorsDatabase = ColorsRoomDatabase.getDatabase(this)
-        retrofit = Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
-            .addConverterFactory(ScalarsConverterFactory.create())
+        initDagger()
+    }
+
+    private fun initDagger() {
+        appComponent = DaggerAppComponent.builder()
+            .context(this)
             .build()
     }
 

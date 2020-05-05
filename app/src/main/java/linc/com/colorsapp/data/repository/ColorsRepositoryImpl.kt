@@ -4,13 +4,16 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import linc.com.colorsapp.data.api.ColorsApi
 import linc.com.colorsapp.data.room.ColorsDao
-import linc.com.colorsapp.data.mappers.ColorModelMapper
+import linc.com.colorsapp.data.utilsapi.ColorModelMapper
+import linc.com.colorsapp.data.utilsapi.WebPageParser
+import linc.com.colorsapp.utils.ColorModelMapperImpl
 import linc.com.colorsapp.domain.ColorModel
 import linc.com.colorsapp.domain.ColorsRepository
-import linc.com.colorsapp.utils.WebPageParser
+import linc.com.colorsapp.utils.WebPageParserImpl
 import java.util.*
+import javax.inject.Inject
 
-class ColorsRepositoryImpl(
+class ColorsRepositoryImpl @Inject constructor(
     private val colorsDao: ColorsDao,
     private val colorsApi: ColorsApi,
     private val colorModelMapper: ColorModelMapper,

@@ -6,16 +6,19 @@ import android.view.Gravity
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
+
 import kotlinx.android.synthetic.main.activity_main.*
+import linc.com.colorsapp.ColorsApp
 import linc.com.colorsapp.R
-import linc.com.colorsapp.ui.colors.ColorsFragment
-import linc.com.colorsapp.ui.onwcolors.OwnColorsFragment
-import linc.com.colorsapp.ui.saved.SavedColorsFragment
+import linc.com.colorsapp.di.components.MainActivitySubComponent
+import linc.com.colorsapp.ui.activities.types.*
+import linc.com.colorsapp.ui.fragments.ColorsFragment
+import linc.com.colorsapp.ui.fragments.OwnColorsFragment
+import linc.com.colorsapp.ui.fragments.SavedColorsFragment
 import linc.com.colorsapp.utils.Constants.Companion.COLORS_FRAGMENT
 import linc.com.colorsapp.utils.Constants.Companion.KEY_CURRENT_FRAGMENT
 import linc.com.colorsapp.utils.Constants.Companion.KEY_MENU_POSITION
@@ -24,23 +27,34 @@ import linc.com.colorsapp.utils.Constants.Companion.OWN_FRAGMENT
 import linc.com.colorsapp.utils.Constants.Companion.SAVED_FRAGMENT
 import linc.com.colorsapp.utils.ScreenNavigator
 import nl.joery.animatedbottombar.AnimatedBottomBar
+import javax.inject.Inject
 
 class MainActivity :
     AppCompatActivity(),
     AnimatedBottomBar.OnTabSelectListener,
+    DaggerActivity,
     NavigatorActivity,
     BottomMenuActivity,
     ToolbarActivity,
     InputActivity
 {
 
-    private lateinit var navigator: ScreenNavigator
+    @Inject
+    lateinit var navigator: ScreenNavigator.Api
+    private var activityComponent: MainActivitySubComponent? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        activityComponent = ColorsApp.appComponent
+            .getMainActivityComponentBuilder()
+            .fragmentManager(supportFragmentManager)
+            .container(R.id.fragmentContainer)
+            .build().apply {
+                inject(this@MainActivity)
+            }
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        navigator = ScreenNavigator(supportFragmentManager, R.id.fragmentContainer)
         menu.setOnTabSelectListener(this)
 
         if(savedInstanceState != null) {
@@ -71,7 +85,7 @@ class MainActivity :
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putInt(KEY_MENU_POSITION, menu.selectedIndex)
-        supportFragmentManager.putFragment(outState, KEY_CURRENT_FRAGMENT, navigator.getCurrentFragment()!!)
+        supportFragmentManager.putFragment(outState, KEY_CURRENT_FRAGMENT, navigator.getCurrentFragment())
         navigator.clearInstances()
     }
 
@@ -86,7 +100,6 @@ class MainActivity :
         }
 
     }
-
 
     override fun navigateToFragment(fragment: Fragment, withBackStack: Boolean, saveInstance: Boolean) {
         navigator.navigateToFragment(fragment, withBackStack, saveInstance)
@@ -132,4 +145,10 @@ class MainActivity :
         }
     }
 
+    override fun getActivitySubComponent() = activityComponent!!
+
+    override fun onDestroy() {
+        super.onDestroy()
+        activityComponent = null
+    }
 }
