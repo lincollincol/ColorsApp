@@ -4,9 +4,16 @@ class Constants {
     companion object {
         // Storage
         const val DATABASE_NAME = "colors_database"
+        const val COLORS_TABLE_NAME = "colors"
 
         // Network
         const val BASE_URL = "https://colours.neilorangepeel.com"
+
+        // Parsing
+        const val PARSE_COLOR_TITLE = 0
+        const val PARSE_COLOR_HEX = 1
+        const val PARSE_COLOR_RGB = 2
+
 
         // Navigation
         const val COLORS_FRAGMENT = 0

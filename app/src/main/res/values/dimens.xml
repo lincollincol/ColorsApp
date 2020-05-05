@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="radius_corners_large">20dp</dimen>
+    <dimen name="margin_medium">10dp</dimen>
+    <dimen name="margin_large">20dp</dimen>
+    <dimen name="width_stroke_medium">10dp</dimen>
+    <dimen name="size_text_large">20sp</dimen>
+    <dimen name="size_text_medium">15sp</dimen>
+    <dimen name="size_text_small">13sp</dimen>
+    <dimen name="elevation_medium">10dp</dimen>
+    <dimen name="margin_menu_indicator">15dp</dimen>
+    <dimen name="height_menu_indicator">5dp</dimen>
+    <dimen name="height_dialog_title">100dp</dimen>
+    <dimen name="height_dialog_bottom_view">50dp</dimen>
+</resources>

@@ -2,6 +2,9 @@ package linc.com.colorsapp.utils
 
 import linc.com.colorsapp.data.utilsapi.WebPageParser
 import linc.com.colorsapp.domain.ColorModel
+import linc.com.colorsapp.utils.Constants.Companion.PARSE_COLOR_HEX
+import linc.com.colorsapp.utils.Constants.Companion.PARSE_COLOR_RGB
+import linc.com.colorsapp.utils.Constants.Companion.PARSE_COLOR_TITLE
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -21,20 +24,18 @@ class WebPageParserImpl @Inject constructor() :
         var counter = 0
         var color = ColorModel()
 
-        // todo optimize
         while (colorsMatcher.find()) {
             // Clear tags
             tagsMatcher = extractFromTagsPattern.matcher(colorsMatcher.group())
             tagsMatcher.find()
 
-            // todo 0 - title 1 - hex . . .
             when (counter) {
-                0 -> {
+                PARSE_COLOR_TITLE -> {
                     color = ColorModel()
                     color.title = tagsMatcher.group().toUpperCase()
                 }
-                1 -> color.hex = tagsMatcher.group()
-                2 -> {
+                PARSE_COLOR_HEX -> color.hex = tagsMatcher.group()
+                PARSE_COLOR_RGB -> {
                     color.rgb = tagsMatcher.group()
                     colors += color
                 }

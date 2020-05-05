@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    android:id="@+id/card"
+<androidx.cardview.widget.CardView android:id="@+id/card"
     android:transitionName="colorCard"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="20dp"
+    app:cardCornerRadius="@dimen/radius_corners_large"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
@@ -15,20 +15,20 @@
         <TextView
             android:id="@+id/colorTitle"
             android:layout_width="0dp"
-            android:layout_height="100dp"
-            android:text="Red"
+            android:layout_height="@dimen/height_dialog_title"
             android:gravity="center"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textSize="@dimen/size_text_large"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/color"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="RED"/>
 
         <View
             android:id="@+id/color"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/height_dialog_bottom_view"
             android:background="@drawable/shape_rectangle_bottom_round"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -38,25 +38,25 @@
             android:id="@+id/colorHexCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="#ffaa"
-            android:textSize="15sp"
+            android:textSize="@dimen/size_text_medium"
             android:textColor="@android:color/black"
             app:layout_constraintTop_toTopOf="@id/color"
             app:layout_constraintBottom_toTopOf="@id/colorRgbCode"
             app:layout_constraintStart_toStartOf="@id/color"
-            app:layout_constraintEnd_toEndOf="@id/color"/>
+            app:layout_constraintEnd_toEndOf="@id/color"
+            tools:text="#ffaa"/>
 
         <TextView
             android:id="@+id/colorRgbCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0, 12, 0"
-            android:textSize="15sp"
+            android:textSize="@dimen/size_text_medium"
             android:textColor="@android:color/black"
             app:layout_constraintTop_toBottomOf="@id/colorHexCode"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/color"
-            app:layout_constraintEnd_toEndOf="@id/color"/>
+            app:layout_constraintEnd_toEndOf="@id/color"
+            tools:text="0, 12, 0"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
