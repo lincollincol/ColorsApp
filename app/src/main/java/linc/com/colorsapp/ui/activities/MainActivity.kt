@@ -1,16 +1,18 @@
 package linc.com.colorsapp.ui.activities
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
-
 import kotlinx.android.synthetic.main.activity_main.*
 import linc.com.colorsapp.ColorsApp
 import linc.com.colorsapp.R
@@ -38,6 +40,7 @@ class MainActivity :
     ToolbarActivity,
     InputActivity
 {
+
 
     @Inject
     lateinit var navigator: ScreenNavigator.Api
@@ -151,4 +154,5 @@ class MainActivity :
         super.onDestroy()
         activityComponent = null
     }
+
 }

@@ -2,7 +2,6 @@ package linc.com.colorsapp.utils
 
 import android.os.Parcel
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.selection.SelectionTracker
 
 fun <E> MutableList<E>.updateAll(newList: List<E>) {
     this.clear()
